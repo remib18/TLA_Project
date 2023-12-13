@@ -11,14 +11,14 @@ import java.util.Map;
  * "Le mystère de la statue maudite", parue dans le numéro 31 (février/mars 1985)
  * du magazine Jeux et Stratégie, page 66 à 69
  */
-public class ContenuAventure {
+public class AdventureContent {
 
-    final public static String titre = "Le mystère de la statue maudite";
+    final public static String title = "Le mystère de la statue maudite";
 
-    static Map<Integer, Lieu> init() {
-        HashMap<Integer, Lieu> lieux = new HashMap<>();
+    static Map<Integer, Location> init() {
+        HashMap<Integer, Location> locations = new HashMap<>();
 
-        lieux.put(1, new Lieu(
+        locations.put(1, new Location(
             "Vous reprenez conscience.\nVous êtes dans un souterrain en partie éboulé.\nL'un des bouts de souterrain se prolonge au-delà de la portée de votre lampe;\nTout près de vous, des pierres et des gravats bloquent entièrement le passage.\nIl faut maintenant sortir de là !",
             List.of(
                 new Proposition("Tentez-vous de dégager l'éboulement pour éventuellement ressortir par où avez dû entrer ?", 13),
@@ -26,7 +26,7 @@ public class ContenuAventure {
             )
         ));
 
-        lieux.put(6, new Lieu(
+        locations.put(6, new Location(
             "Au bout de quelques vingt ou trente mètres, le couloir se termine en cul-de-sac à cause d'un\néboulement.",
             List.of(
                 new Proposition("Faites-vous demi-tour ?", 27),
@@ -34,7 +34,7 @@ public class ContenuAventure {
             )
         ));
 
-        lieux.put(9, new Lieu(
+        locations.put(9, new Location(
             "Quelque vingt mètres plus loin, vous arrivez au pied d'un escalier.\nQue faites-vous ?",
             List.of(
                 new Proposition("Vous examinez la fresque ?", 20),
@@ -43,7 +43,7 @@ public class ContenuAventure {
             )
         ));
 
-        lieux.put(13, new Lieu(
+        locations.put(13, new Location(
             "L'éboulement est récent, et les gravats instables.\nDans un soudain nuage de poussière, une pluie de pierres vous ensevelit.\nPerdez 2 points de survie. Si vous pouvez les dépenser, vous vous dégagez de la nouvelle avalanche.\nQuelle est ensuite votre décision ?",
             List.of(
                 new Proposition("Vous continuez à tenter de déblayer ?", 17),
@@ -51,7 +51,7 @@ public class ContenuAventure {
             )
         ));
 
-        lieux.put(17, new Lieu(
+        locations.put(17, new Location(
             "Une nouvelle avalanche de gravats se déverse sur vous.",
             List.of(
                 new Proposition("Vous continuez coûte que coûte à déblayer ?", 13),
@@ -59,7 +59,7 @@ public class ContenuAventure {
             )
         ));
 
-        lieux.put(18, new Lieu(
+        locations.put(18, new Location(
             "Une quinzaine de mètre plus loin, le couloir est creusé de deux alcôves",
             List.of(
                 new Proposition("Vous les examinez de près ?", 11),
@@ -67,6 +67,6 @@ public class ContenuAventure {
             )
         ));
 
-        return lieux;
+        return locations;
     }
 }

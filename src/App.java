@@ -27,10 +27,10 @@ import java.util.*;
 public class App implements ActionListener {
 
     // Nombre de lignes dans la zone de texte
-    final int nbLignes = 20;
+    final int linesNumber = 20;
 
-    Map<Integer, Lieu> lieux;
-    Lieu lieuActuel;
+    Map<Integer, Location> locations;
+    Location currentLocation;
 
     JFrame frame;
     JPanel mainPanel;
@@ -49,13 +49,13 @@ public class App implements ActionListener {
     private void init() {
 
         // Charge le contenu de l'aventure
-        lieux = ContenuAventure.init();
+        locations = AdventureContent.init();
 
         // Prépare l'IHM
-        labels = new JLabel[nbLignes];
+        labels = new JLabel[linesNumber];
         btns = new ArrayList<>();
 
-        frame = new JFrame(ContenuAventure.titre);
+        frame = new JFrame(AdventureContent.title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
@@ -63,7 +63,7 @@ public class App implements ActionListener {
 
         frame.add(mainPanel);
 
-        for(int i=0;i<nbLignes;i++) {
+        for(int i = 0; i< linesNumber; i++) {
             labels[i] = new JLabel(" ");
             mainPanel.add(labels[i], new GridBagConstraints() {{
                 this.gridwidth = GridBagConstraints.REMAINDER;
@@ -75,8 +75,8 @@ public class App implements ActionListener {
         }
 
         // Démarre l'aventure au lieu n° 1
-        lieuActuel = lieux.get(1);
-        initLieu();
+        currentLocation = locations.get(1);
+        initLocations();
 
         frame.pack();
         frame.setVisible(true);
@@ -86,15 +86,15 @@ public class App implements ActionListener {
      * Affichage du lieu lieuActuel et créations des boutons de propositions correspondantes
      * à ce lieu
      */
-    void initLieu() {
+    void initLocations() {
         for(JButton btn: btns) {
             mainPanel.remove(btn);
         }
         btns.clear();
-        affiche(lieuActuel.description.split("\n"));
+        display(currentLocation.description.split("\n"));
         frame.pack();
-        for(int i=0; i<lieuActuel.propositions.size(); i++) {
-            JButton btn = new JButton("<html><p>" + lieuActuel.propositions.get(i).texte + "</p></html>");
+        for(int i = 0; i< currentLocation.propositions.size(); i++) {
+            JButton btn = new JButton("<html><p>" + currentLocation.propositions.get(i).text + "</p></html>");
             btn.setActionCommand(String.valueOf(i));
             btn.addActionListener(this);
             mainPanel.add(btn, new GridBagConstraints() {{
@@ -116,22 +116,22 @@ public class App implements ActionListener {
         int index = Integer.valueOf(event.getActionCommand());
 
         // Retrouve la propostion
-        Proposition proposition = lieuActuel.propositions.get(index);
+        Proposition proposition = currentLocation.propositions.get(index);
 
         // Recherche le lieu désigné par la proposition
-        Lieu lieu = lieux.get(proposition.numeroLieu);
-        if (lieu != null) {
+        Location location = locations.get(proposition.locationNumber);
+        if (location != null) {
 
             // Affiche la proposition qui vient d'être choisie par le joueur
-            affiche(new String[]{"> " + proposition.texte});
+            display(new String[]{"> " + proposition.text});
 
             // Affichage du nouveau lieu et création des boutons des nouvelles propositions
-            lieuActuel = lieu;
-            initLieu();
+            currentLocation = location;
+            initLocations();
         } else {
             // Cas particulier : le lieu est déclarée dans une proposition mais pas encore décrit
             // (lors de l'élaboration de l'aventure par exemple)
-            JOptionPane.showMessageDialog(null,"Lieu n° " + proposition.numeroLieu + " à implémenter"); 
+            JOptionPane.showMessageDialog(null,"Lieu n° " + proposition.locationNumber + " à implémenter");
         }
     }
 
@@ -139,14 +139,14 @@ public class App implements ActionListener {
      * Gère l'affichage dans la zone de texte, avec un effet de défilement
      * (comme dans un terminal)
      */
-    private void affiche(String[] contenu) {
+    private void display(String[] contenu) {
         int n = contenu.length;
-        for (int i = 0; i < nbLignes-(n+1); i++) {
+        for (int i = 0; i < linesNumber -(n+1); i++) {
             labels[i].setText(labels[i + n + 1].getText());
         }
-        labels[nbLignes-(n+1)].setText(" ");
+        labels[linesNumber -(n+1)].setText(" ");
         for(int i = 0; i<n; i++) {
-            labels[nbLignes-n+i].setText(contenu[i]);
+            labels[linesNumber -n+i].setText(contenu[i]);
         }
     }
 

@@ -4,11 +4,11 @@
  * Une proposition mène à un nouveau lieu, identifié par un numéro.
  */
 public class Proposition {
-    String texte;
-    int numeroLieu;
+    String text;
+    int locationNumber;
 
-    public Proposition(String texte, int numeroLieu) {
-        this.texte = texte;
-        this.numeroLieu = numeroLieu;
+    public Proposition(String text, int locationNumber) {
+        this.text = text;
+        this.locationNumber = locationNumber;
     }
 }

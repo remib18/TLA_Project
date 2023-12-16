@@ -1,3 +1,5 @@
+package App.adventure;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class AdventureContent {
     static Map<Integer, Location> init() {
         HashMap<Integer, Location> locations = new HashMap<>();
 
-        locations.put(1, new Location(
+        locations.put(1, new Location(1,
             "Vous reprenez conscience.\nVous êtes dans un souterrain en partie éboulé.\nL'un des bouts de souterrain se prolonge au-delà de la portée de votre lampe;\nTout près de vous, des pierres et des gravats bloquent entièrement le passage.\nIl faut maintenant sortir de là !",
             List.of(
                 new Proposition("Tentez-vous de dégager l'éboulement pour éventuellement ressortir par où avez dû entrer ?", 13),
@@ -26,7 +28,7 @@ public class AdventureContent {
             )
         ));
 
-        locations.put(6, new Location(
+        locations.put(6, new Location(6,
             "Au bout de quelques vingt ou trente mètres, le couloir se termine en cul-de-sac à cause d'un\néboulement.",
             List.of(
                 new Proposition("Faites-vous demi-tour ?", 27),
@@ -34,7 +36,7 @@ public class AdventureContent {
             )
         ));
 
-        locations.put(9, new Location(
+        locations.put(9, new Location(9,
             "Quelque vingt mètres plus loin, vous arrivez au pied d'un escalier.\nQue faites-vous ?",
             List.of(
                 new Proposition("Vous examinez la fresque ?", 20),
@@ -43,7 +45,7 @@ public class AdventureContent {
             )
         ));
 
-        locations.put(13, new Location(
+        locations.put(13, new Location(13,
             "L'éboulement est récent, et les gravats instables.\nDans un soudain nuage de poussière, une pluie de pierres vous ensevelit.\nPerdez 2 points de survie. Si vous pouvez les dépenser, vous vous dégagez de la nouvelle avalanche.\nQuelle est ensuite votre décision ?",
             List.of(
                 new Proposition("Vous continuez à tenter de déblayer ?", 17),
@@ -51,7 +53,7 @@ public class AdventureContent {
             )
         ));
 
-        locations.put(17, new Location(
+        locations.put(17, new Location(17,
             "Une nouvelle avalanche de gravats se déverse sur vous.",
             List.of(
                 new Proposition("Vous continuez coûte que coûte à déblayer ?", 13),
@@ -59,7 +61,7 @@ public class AdventureContent {
             )
         ));
 
-        locations.put(18, new Location(
+        locations.put(18, new Location(18,
             "Une quinzaine de mètre plus loin, le couloir est creusé de deux alcôves",
             List.of(
                 new Proposition("Vous les examinez de près ?", 11),
@@ -68,5 +70,9 @@ public class AdventureContent {
         ));
 
         return locations;
+    }
+
+    public static Adventure getAdventure() {
+        return new Adventure(title, init());
     }
 }

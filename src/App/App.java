@@ -1,15 +1,20 @@
+package App;
+
 /*
+ * Projet TLA 2023-24
+ *
+ * Réalisé par :
+ * - BERNARD Rémi
+ * - CHERAMY Benoît
+ * - GALLI Gabriel
+ * - QUILLON Alexis
+ *
+ */
 
-Projet TLA 2023-24
-
-Réalisé par :
-- NOM Prénom 
-- NOM Prénom
-- NOM Prénom
-- NOM Prénom
-- NOM Prénom
-
-*/
+import App.adventure.Adventure;
+import App.adventure.AdventureContent;
+import App.adventure.Location;
+import App.adventure.Proposition;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +31,9 @@ import java.util.*;
 
 public class App implements ActionListener {
 
-    // Nombre de lignes dans la zone de texte
+    /**
+     * Nombre de lignes dans la zone de texte
+     */
     final int linesNumber = 20;
 
     Map<Integer, Location> locations;
@@ -35,27 +42,35 @@ public class App implements ActionListener {
     JFrame frame;
     JPanel mainPanel;
 
-    // Labels composant la zone de texte
+    /**
+     * Labels composant la zone de texte
+     */
     JLabel[] labels;
 
-    // Boutons de proposition
+    /**
+     * Boutons de proposition
+     */
     ArrayList<JButton> btns;
 
     public static void main(String[] args) {
         App app = new App();
-        SwingUtilities.invokeLater(() -> app.init());
+        SwingUtilities.invokeLater(app::init);
     }
 
     private void init() {
 
+        // Load adventure
+        // Todo: load from file (using AdventureContent for testing)
+        Adventure adventure = AdventureContent.getAdventure();
+
         // Charge le contenu de l'aventure
-        locations = AdventureContent.init();
+        locations = adventure.locations();
 
         // Prépare l'IHM
         labels = new JLabel[linesNumber];
         btns = new ArrayList<>();
 
-        frame = new JFrame(AdventureContent.title);
+        frame = new JFrame(adventure.title());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
@@ -91,10 +106,10 @@ public class App implements ActionListener {
             mainPanel.remove(btn);
         }
         btns.clear();
-        display(currentLocation.description.split("\n"));
+        display(currentLocation.description().split("\n"));
         frame.pack();
-        for(int i = 0; i< currentLocation.propositions.size(); i++) {
-            JButton btn = new JButton("<html><p>" + currentLocation.propositions.get(i).text + "</p></html>");
+        for(int i = 0; i< currentLocation.propositions().size(); i++) {
+            JButton btn = new JButton(STR."<html><p>\{currentLocation.propositions().get(i).text()}</p></html>");
             btn.setActionCommand(String.valueOf(i));
             btn.addActionListener(this);
             mainPanel.add(btn, new GridBagConstraints() {{
@@ -113,17 +128,17 @@ public class App implements ActionListener {
     public void actionPerformed(ActionEvent event) {
 
         // Retrouve l'index de la proposition
-        int index = Integer.valueOf(event.getActionCommand());
+        int index = Integer.parseInt(event.getActionCommand());
 
-        // Retrouve la propostion
-        Proposition proposition = currentLocation.propositions.get(index);
+        // Retrouve la proposition
+        Proposition proposition = currentLocation.propositions().get(index);
 
         // Recherche le lieu désigné par la proposition
-        Location location = locations.get(proposition.locationNumber);
+        Location location = locations.get(proposition.locationNumber());
         if (location != null) {
 
             // Affiche la proposition qui vient d'être choisie par le joueur
-            display(new String[]{"> " + proposition.text});
+            display(new String[]{STR."> \{proposition.text()}"});
 
             // Affichage du nouveau lieu et création des boutons des nouvelles propositions
             currentLocation = location;
@@ -131,7 +146,7 @@ public class App implements ActionListener {
         } else {
             // Cas particulier : le lieu est déclarée dans une proposition mais pas encore décrit
             // (lors de l'élaboration de l'aventure par exemple)
-            JOptionPane.showMessageDialog(null,"Lieu n° " + proposition.locationNumber + " à implémenter");
+            JOptionPane.showMessageDialog(null, STR."Lieu n° \{proposition.locationNumber()} à implémenter");
         }
     }
 

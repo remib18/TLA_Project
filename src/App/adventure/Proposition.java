@@ -7,11 +7,19 @@ package App.adventure;
  */
 public record Proposition(String text, Integer locationNumber) {
 
+    /**
+     * Get the text of the proposition
+     * @return The text of the proposition
+     */
     @Override
     public String text() {
         return text;
     }
 
+    /**
+     * Get the location number of the proposition
+     * @return The location number of the proposition
+     */
     @Override
     public Integer locationNumber() {
         return locationNumber;

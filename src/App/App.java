@@ -60,8 +60,8 @@ public class App implements ActionListener {
     private void init() {
 
         // Load adventure
-        // Todo: load from file (using AdventureContent for testing)
-        Adventure adventure = AdventureContent.getAdventure();
+        // Todo: link to a file or prompt a file selection dialog)
+        Adventure adventure = Interpreter.interpret(null);
 
         // Charge le contenu de l'aventure
         locations = adventure.locations();

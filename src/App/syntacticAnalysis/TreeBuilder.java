@@ -140,7 +140,7 @@ public class TreeBuilder {
         }
         String description = (String) t.value();
 
-        res.add(new Node(NodeType.ADD_LOCATION, id, description));
+        res.add(new Node(NodeType.OPTION_DEFINITION, id, description));
         List<Node> prev = C();
         if (!Objects.isNull(prev)) {
             res.addAll(prev);
@@ -182,6 +182,12 @@ public class TreeBuilder {
         return cursor >= tokens.size();
     }
 
+    /**
+     * Utility method that check if the next token is of the given type
+     * @param expected The expected type of the next token
+     * @return The next token
+     * @throws UnexpectedTokenException If the next token is not of the expected type
+     */
     private Token<?> checkTokenAndReturn(Tokens... expected) throws UnexpectedTokenException {
         Token<?> t = readToken();
         if (Objects.isNull(t)) {

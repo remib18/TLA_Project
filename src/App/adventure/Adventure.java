@@ -1,13 +1,14 @@
 package App.adventure;
 
-import App.Interpreter;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Represents an adventure
+ * @param title - The title of the adventure
+ * @param locations - The locations of the adventure
+ */
 public record Adventure(String title, Map<Integer, Location> locations) {
 
     public Adventure {
@@ -19,29 +20,37 @@ public record Adventure(String title, Map<Integer, Location> locations) {
         }
     }
 
+    /**
+     * Get the title of the adventure
+     * @return The title of the adventure
+     */
     @Override
     public String title() {
         return title;
     }
 
+    /**
+     * Get the locations of the adventure
+     * @return The locations of the adventure
+     */
     public List<Location> locationsToList() {
         return locations.values().stream().toList();
     }
 
+    /**
+     * Get a location by its id
+     * @param id - The id of the location
+     * @return The location
+     */
     public Location getLocation(int id) {
         return locations.get(id);
     }
 
+    /**
+     * Add a location to the adventure
+     * @param location - The location to add
+     */
     public void addLocation(Location location) {
         locations.put(location.id(), location);
-    }
-
-    public static Adventure load(String fileName) {
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(fileName)));
-            return Interpreter.interpret(content);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

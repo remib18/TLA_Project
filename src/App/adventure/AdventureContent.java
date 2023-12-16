@@ -17,7 +17,7 @@ public class AdventureContent {
 
     final public static String title = "Le mystère de la statue maudite";
 
-    static Map<Integer, Location> init() {
+    public static Map<Integer, Location> init() {
         HashMap<Integer, Location> locations = new HashMap<>();
 
         locations.put(1, new Location(1,
@@ -70,9 +70,5 @@ public class AdventureContent {
         ));
 
         return locations;
-    }
-
-    public static Adventure getAdventure() {
-        return new Adventure(title, init());
     }
 }

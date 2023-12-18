@@ -58,6 +58,9 @@ public class TreeBuilder {
         Token<?> t = checkTokenAndReturn(Tokens.strValue);
         String title = (String) t.value();
 
+        // Checking the end of the statement
+        checkTokenAndReturn(Tokens.statementEnd);
+
         nodeStmt.addChild(new Node(NodeType.SET_TITLE, title));
         nodeStmt.addChild(A());
 
@@ -82,7 +85,7 @@ public class TreeBuilder {
     }
 
     /**
-     * B -> `addLocation Int Str C`
+     * B -> `addLocation Int Str C;`
      * @return The node built
      */
     private Node B() throws UnexpectedTokenException {
@@ -99,6 +102,9 @@ public class TreeBuilder {
 
         Node node = new Node(NodeType.ADD_LOCATION, id, description);
         node.addChild(C());
+
+        // Check the end of the statement
+        checkTokenAndReturn(Tokens.statementEnd);
 
         return node;
     }

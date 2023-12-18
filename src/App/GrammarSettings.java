@@ -12,37 +12,29 @@ public class GrammarSettings {
     public static final Integer INITIAL_STATE = 0;
 
     /**
-     * States that are considered as final states
-     */
-    public static final Set<Integer> ACCEPTATION_STATES = Set.of(101, 102, 103, 104, 105, 106, 107, 108, 109);
-
-    /**
      * States that once reached, the last character must be read again
      */
-    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(1, 2, 5);
+    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(0, 1);
 
     /**
      * Transition table of the lexical analysis
      */
     private static final Integer[][] TRANSITIONS = {
-            //       espace   setTitle    ;    addLocation    ->     "    \    chiffre     lettre
-            /* 0 */ {  -1,     101,        -1,     -1,        -1,   -1,   -1,    -1,         -1   }, // État initial, n'accepte que 'setTitle'
-            /* 1 */ {   0,     101,       102,     103,       104,    1,    2,     3,          4   }, // État avec retour arrière
-            /* 2 */ {   1,       1,         1,       1,         1,  105,    2,   105,        105   }, // État avec retour arrière
-            /* 3 */ {   108,   108,       108,     108,       108,  109,  109,     1,        109   },
-            /* 4 */ {   106,   106,       106,     106,       106,  106,  106,     3,        106   },
-            /* 5 */ {   4,     107,       107,     107,       107,  107,  107,     4,          4   }  // État avec retour arrière
+            //       espace   "    \      -     >    ;    intVal     charVal
+            /* 0 */ {   0,     1,   -1,   6,   -1,  105,    5,          4   }, // État avec retour arrière
+            /* 1 */ {   1,   101,    2,   1,    1,    1,    1,          1   }, // État avec retour arrière
+            /* 2 */ {   1,     1,    1,   1,    1,    1,    1,          1   },
+            /* 3 */ { 102,   102,  102, 102,  102,  102,    3,          3   },
+            /* 4 */ { 103,   103,  103, 103,  103,  103,    4,        103   },
+            /* 5 */ {  -1,    -1,   -1,  -1,  104,   -1,   -1,         -1   },
+            /* 6 */ {  -1,    -1,   -1,  -1,  104,   -1,   -1,         -1   }
 
-
-            // 101 acceptation d'un setTitle
+            // -1  erreur
+            // 101 acceptation d'un "
             // 102 acceptation d'un ;
-            // 103 acceptation d'un addLocation
+            // 103 acceptation d'un charVal
             // 104 acceptation d'un ->
-            // 105 acceptation d'un "
-            // 106 acceptation d'un intVal
-            // 107 acceptation d'un stringVal
-            // 108 acceptation d'un \
-            // 109 acceptation d'un \char
+            // 105 acceptation d'un espace
     };
 
     /**
@@ -52,8 +44,15 @@ public class GrammarSettings {
      */
     public static Integer getSymbolIndex(Character c) {
         return switch (c) {
-            // Todo: implement
-            default -> null;
+            case ' '  -> 0; // espace
+            case '"'  -> 1;
+            case '\\' -> 2;
+            case '-'  -> 3;
+            case '>'  -> 4;
+            case ';'  -> 5;
+            case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+                      -> 6; // intVal
+            default   -> 7;
         };
     }
 

@@ -14,19 +14,35 @@ public class GrammarSettings {
     /**
      * States that are considered as final states
      */
-    public static final Set<Integer> ACCEPTATION_STATES = Set.of();
+    public static final Set<Integer> ACCEPTATION_STATES = Set.of(101, 102, 103, 104, 105, 106, 107, 108, 109);
 
     /**
      * States that once reached, the last character must be read again
      */
-    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of();
+    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(1, 2, 5);
 
     /**
      * Transition table of the lexical analysis
      */
-    private static final Integer[][] TRANSITIONS = {  // Todo: set transition table values
-            //       espace  caractère     ;  addLocation    ->     "  chiffre  lettre
-            /* 1 */ {    0,       null,  null,         null,  null,  null,     null,    null }
+    private static final Integer[][] TRANSITIONS = {
+            //       espace   setTitle    ;    addLocation    ->     "    \    chiffre     lettre
+            /* 0 */ {  -1,     101,        -1,     -1,        -1,   -1,   -1,    -1,         -1   }, // État initial, n'accepte que 'setTitle'
+            /* 1 */ {   0,     101,       102,     103,       104,    1,    2,     3,          4   }, // État avec retour arrière
+            /* 2 */ {   1,       1,         1,       1,         1,  105,    2,   105,        105   }, // État avec retour arrière
+            /* 3 */ {   108,   108,       108,     108,       108,  109,  109,     1,        109   },
+            /* 4 */ {   106,   106,       106,     106,       106,  106,  106,     3,        106   },
+            /* 5 */ {   4,     107,       107,     107,       107,  107,  107,     4,          4   }  // État avec retour arrière
+
+
+            // 101 acceptation d'un setTitle
+            // 102 acceptation d'un ;
+            // 103 acceptation d'un addLocation
+            // 104 acceptation d'un ->
+            // 105 acceptation d'un "
+            // 106 acceptation d'un intVal
+            // 107 acceptation d'un stringVal
+            // 108 acceptation d'un \
+            // 109 acceptation d'un \char
     };
 
     /**

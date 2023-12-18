@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
 <svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="800" height="600" fill="#fff" stroke="black" stroke-width="1"/>
+    <rect x="0" y="0" width="800" height="600" fill="#eee" rx="6" ry="6"/>
     <ellipse stroke="black" stroke-width="1" fill="none" cx="120.5" cy="120.5" rx="30" ry="30"/>
     <text x="115.5" y="126.5" font-family="Times New Roman" font-size="20">0</text>
     <ellipse stroke="black" stroke-width="1" fill="none" cx="580.5" cy="120.5" rx="30" ry="30"/>

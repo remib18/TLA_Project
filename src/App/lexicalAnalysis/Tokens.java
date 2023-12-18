@@ -4,6 +4,7 @@ public enum Tokens {
     setTitle,
     addLocation,
     arrow,
+    statementEnd,
     intValue,
     strValue;
 
@@ -14,7 +15,8 @@ public enum Tokens {
             case addLocation -> "addLocation";
             case arrow -> "arrow";
             case intValue -> "intValue";
-            case strValue -> "strVal";
+            case strValue -> "strValue";
+            case statementEnd -> "statementEnd";
         };
     }
 }

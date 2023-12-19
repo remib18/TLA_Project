@@ -93,11 +93,11 @@ The first and follow sets of the grammar are the following :
 | Non-terminal  | First set            | Follow set           |
 |---------------|----------------------|----------------------|
 | S             | {`setTitle`}         | {`$`}                |
-| A             | {`addLocation`, `ε`} | {`addLocation`, `$`} |
+| A             | {`addLocation`, `ε`} | {`$`} |
 | B             | {`addLocation`}      | {`addLocation`, `$`} |
-| C             | {`->`, `ε`}          | {`;`, `->`}          |
-| Int           | {`intVal`, `ε`}      | {`"`}                |
-| Str           | {`"`}                | {`;`, `->`}          |
+| C             | {`->`, `ε`}          | {`;`, `$`}           |
+| Int           | {`intVal`, `ε`}      | {`"`, `$`}           |
+| Str           | {`"`}                | {`;`, `->`, `"`, `addLocation`, `$`} |
 | Str'          | {`charVal`, `ε`}     | {`"`}                |
 
 #### State machine diagram

@@ -84,7 +84,7 @@ The grammar of the language is the following :
 - C -> `-> Int Str C|ε`
 - Int -> `intVal Int|ε` with `intVal` being a digit between 0 and 9
 - Str -> `"Str'"`
-- Str' -> `charVal Str|ε` with `charVal` being any character
+- Str' -> `charVal Str'|ε` with `charVal` being any character
 
 #### The first and follow sets
 
@@ -105,6 +105,16 @@ The first and follow sets of the grammar are the following :
 The syntax tree of the grammar is the following :
 
 ![Syntax tree](docs/state-machine-diagram.svg)
+
+##### The accepting states
+
+| state number | accepting   |
+|--------------|-------------|
+| 101          | A string    |
+| 102          | A keyword   |
+| 103          | An integer  |
+| 104          | An arrow    |
+| 105          | A semicolon |
 
 #### Translation table
 

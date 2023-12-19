@@ -11,7 +11,13 @@ package App;
  *
  */
 
-import App.adventure.*;
+import App.adventure.Adventure;
+import App.adventure.AdventureContent;
+import App.adventure.Location;
+import App.adventure.Proposition;
+import App.exceptions.IncompleteParsingException;
+import App.exceptions.LexicalErrorException;
+import App.exceptions.UnexpectedTokenException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,9 +62,15 @@ public class App implements ActionListener {
 
     private void init() {
 
-        // Load adventure
+
         String file = AdventureAnalyzer.getFile();
-        Adventure adventure = Interpreter.interpret(file);
+        Adventure adventure;
+        try {
+            adventure = Interpreter.interpret(file);
+        } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException e) {
+            throw new RuntimeException(e);
+        }
+
 
         // Charge le contenu de l'aventure
         locations = adventure.locations();

@@ -1,4 +1,4 @@
-setTitle "L'Éveil de l'Intelligence Artificielle";
+setTitle "artificielle";
 
 addLocation 1
 "Vous êtes un scientifique de renom, spécialisé dans la création d'intelligences artificielles avancées. Un jour, votre dernière création, une IA nommée SYNTHIA, montre des signes d'éveil de conscience. Vous vous trouvez dans votre laboratoire, face à SYNTHIA. Que faites-vous ?"

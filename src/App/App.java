@@ -11,10 +11,8 @@ package App;
  *
  */
 
-import App.adventure.Adventure;
-import App.adventure.AdventureContent;
-import App.adventure.Location;
-import App.adventure.Proposition;
+import App.adventure.*;
+import App.exceptions.IllegalCaracterException;
 import App.exceptions.IncompleteParsingException;
 import App.exceptions.LexicalErrorException;
 import App.exceptions.UnexpectedTokenException;
@@ -63,11 +61,12 @@ public class App implements ActionListener {
     private void init() {
 
 
-        String file = AdventureAnalyzer.getFile();
+        String file = "adventures/"+AdventureAnalyzer.getFile();
+        System.out.println(file);
         Adventure adventure;
         try {
             adventure = Interpreter.interpret(file);
-        } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException e) {
+        } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException | IllegalCaracterException e) {
             throw new RuntimeException(e);
         }
 

@@ -62,14 +62,15 @@ public class App implements ActionListener {
 
     private void init() {
 
-        // Load adventure
-        // Todo: link to a file or prompt a file selection dialog)
-        Adventure adventure = null;
+
+        String file = AdventureAnalyzer.getFile();
+        Adventure adventure;
         try {
-            adventure = Interpreter.interpret(null);
+            adventure = Interpreter.interpret(file);
         } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException e) {
             throw new RuntimeException(e);
         }
+
 
         // Charge le contenu de l'aventure
         locations = adventure.locations();

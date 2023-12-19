@@ -8,7 +8,7 @@ public class LexicalErrorException extends Exception {
         super(STR."No defined transition with state(\{state}) and symbolIndex(\{symbolIndex}).");
     }
 
-    public LexicalErrorException(Integer state, Character c) {
+    public LexicalErrorException(Integer state, Character c) throws IllegalCaracterException {
         super(STR."No defined transition with state(\{state}) and symbolIndex(\{GrammarSettings.getSymbolIndex(c)}) from character(\{c}).");
     }
 

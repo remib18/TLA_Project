@@ -106,6 +106,16 @@ The syntax tree of the grammar is the following :
 
 ![Syntax tree](docs/state-machine-diagram.svg)
 
+##### The accepting states
+
+| state number | accepting   |
+|--------------|-------------|
+| 101          | A string    |
+| 102          | A keyword   |
+| 103          | An integer  |
+| 104          | An arrow    |
+| 105          | A semicolon |
+
 #### Translation table
 
 The translation table of the grammar is the following :

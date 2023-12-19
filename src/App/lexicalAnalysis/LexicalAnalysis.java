@@ -126,7 +126,9 @@ public class LexicalAnalysis {
                 tokenType = Tokens.statementEnd;
                 break;
             default:
-                throw new UnexpectedTokenException(buffer.toString());
+                if (tokenType == null) {
+                    throw new UnexpectedTokenException(STR."Unexpected token with symbol index : \{symbolIndex} and buffer : \{buffer.toString()}");
+                }
         }
 
         if (tokenType != null) {

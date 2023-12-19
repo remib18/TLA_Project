@@ -83,7 +83,8 @@ The grammar of the language is the following :
 - B -> `addLocation Int Str C;`
 - C -> `-> Int Str C|ε`
 - Int -> `intVal Int|ε` with `intVal` being a digit between 0 and 9
-- Str -> `charVal Str|ε` with `charVal` being any character
+- Str -> `"Str'"`
+- Str' -> `charVal Str|ε` with `charVal` being any character
 
 #### The first and follow sets
 

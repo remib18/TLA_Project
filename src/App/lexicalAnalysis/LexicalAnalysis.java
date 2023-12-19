@@ -1,6 +1,7 @@
 package App.lexicalAnalysis;
 
 import App.GrammarSettings;
+import App.exceptions.IllegalCaracterException;
 import App.exceptions.LexicalErrorException;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class LexicalAnalysis {
      * @return The list of tokens
      * @throws LexicalErrorException in case of an invalid input
      */
-    public static List<Token<?>> run(String input) throws LexicalErrorException {
+    public static List<Token<?>> run(String input) throws LexicalErrorException, IllegalCaracterException {
         LexicalAnalysis la = new LexicalAnalysis(input);
         la.execute();
         return la.toTokenList();
@@ -66,7 +67,7 @@ public class LexicalAnalysis {
      *
      * @mutates this.res - The token is added to the result list
      */
-    private void execute() throws LexicalErrorException {
+    private void execute() throws LexicalErrorException, IllegalCaracterException {
 
         Character c;
         Integer symbolIndex;

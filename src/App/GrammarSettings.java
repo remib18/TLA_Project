@@ -25,8 +25,8 @@ public class GrammarSettings {
             /* 0 */ {   0,     1,   -1,   6,   -1,  105,    5,          4   },
             /* 1 */ {   1,   101,    2,   1,    1,    1,    1,          1   },
             /* 2 */ {   1,     1,    1,   1,    1,    1,    1,          1   },
-            /* 3 */ { 102,   102,  102, 102,  102,  102,    3,          3   }, // État avec retour arrière
-            /* 4 */ { 103,   103,  103, 103,  103,  103,    4,        103   }, // État avec retour arrière
+            /* 3 */ { 102,   102,  102, 102,  102,  102,    3,          3   },
+            /* 4 */ { 103,   103,  103, 103,  103,  103,    4,        103   },
             /* 5 */ {  -1,    -1,   -1,  -1,  104,   -1,   -1,         -1   },
 
             // -1  erreur
@@ -45,7 +45,7 @@ public class GrammarSettings {
     public static Integer getSymbolIndex(Character c) throws IllegalCaracterException {
         return switch (c) {
             case null -> 0;
-            case '\t', '\n' -> 0;
+            case ' ', '\t', '\n' -> 0;
             case '"' -> 1;
             case '\\' -> 2;
             case '-' -> 3;

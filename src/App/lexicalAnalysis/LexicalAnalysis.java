@@ -75,6 +75,7 @@ public class LexicalAnalysis {
         do {
             c = readChar();
             symbolIndex = GrammarSettings.getTransition(state, c);
+            System.out.println(c);
             if (symbolIndex >= 100) {
                 registerToken(symbolIndex);
                 state = 0;

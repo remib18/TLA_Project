@@ -3,6 +3,7 @@ package App;
 import App.adventure.Adventure;
 import App.adventure.Location;
 import App.adventure.Proposition;
+import App.exceptions.IllegalCaracterException;
 import App.exceptions.IncompleteParsingException;
 import App.exceptions.LexicalErrorException;
 import App.exceptions.UnexpectedTokenException;
@@ -23,7 +24,7 @@ public class Interpreter {
      * @param fileName - The name of the file to interpret
      * @return The adventure
      */
-    public static Adventure interpret(String fileName) throws LexicalErrorException, UnexpectedTokenException, IncompleteParsingException {
+    public static Adventure interpret(String fileName) throws LexicalErrorException, UnexpectedTokenException, IncompleteParsingException, IllegalCaracterException {
         String content = getFileContent(fileName);
         HashMap<Integer, Location> locations = new HashMap<>();
         String title = null;

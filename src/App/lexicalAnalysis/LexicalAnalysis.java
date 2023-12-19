@@ -3,6 +3,7 @@ package App.lexicalAnalysis;
 import App.GrammarSettings;
 import App.exceptions.IllegalCaracterException;
 import App.exceptions.LexicalErrorException;
+import App.exceptions.UnexpectedTokenException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class LexicalAnalysis {
      * @return The list of tokens
      * @throws LexicalErrorException in case of an invalid input
      */
-    public static List<Token<?>> run(String input) throws LexicalErrorException, IllegalCaracterException {
+    public static List<Token<?>> run(String input) throws LexicalErrorException, IllegalCaracterException, UnexpectedTokenException {
         LexicalAnalysis la = new LexicalAnalysis(input);
         la.execute();
         return la.toTokenList();
@@ -67,7 +68,7 @@ public class LexicalAnalysis {
      *
      * @mutates this.res - The token is added to the result list
      */
-    private void execute() throws LexicalErrorException, IllegalCaracterException {
+    private void execute() throws LexicalErrorException, IllegalCaracterException, UnexpectedTokenException {
 
         Character c;
         Integer symbolIndex;
@@ -96,8 +97,43 @@ public class LexicalAnalysis {
      *
      * @mutates this.res - The token is added to the result list
      */
-    private void registerToken(Integer symbolIndex) {
-        // Todo: implement
+    private void registerToken(Integer symbolIndex) throws UnexpectedTokenException {
+        Tokens tokenType = null;
+        Object tokenValue = null;
+
+        switch (symbolIndex) {
+            case 101:
+                // On ne fait rien pour le cas 101 car nous ne voulons pas enregistrer un token pour un "
+                break;
+            case 102:
+                String bufferContent = buffer.toString();
+                if (bufferContent.equals("setTitle")) {
+                    tokenType = Tokens.setTitle;
+                } else if (bufferContent.equals("addLocation")) {
+                    tokenType = Tokens.addLocation;
+                } else {
+                    tokenType = Tokens.strValue;
+                }
+                tokenValue = bufferContent;
+                break;
+            case 103:
+                tokenType = Tokens.intValue;
+                tokenValue = Integer.parseInt(buffer.toString());
+                break;
+            case 104:
+                tokenType = Tokens.arrow;
+                break;
+            case 105:
+                tokenType = Tokens.statementEnd;
+                break;
+            default:
+                throw new UnexpectedTokenException("Unexpected token with symbol index " + symbolIndex);
+        }
+
+        if (tokenType != null) {
+            Token<?> token = new Token<>(tokenType, tokenValue);
+            res.add(token);
+        }
     }
 
     /**

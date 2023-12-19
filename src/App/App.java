@@ -57,8 +57,8 @@ public class App implements ActionListener {
     private void init() {
 
         // Load adventure
-        String folder = AdventureAnalyzer.getFolder();
-        Adventure adventure = Interpreter.interpret(folder);
+        String file = AdventureAnalyzer.getFile();
+        Adventure adventure = Interpreter.interpret(file);
 
         // Charge le contenu de l'aventure
         locations = adventure.locations();

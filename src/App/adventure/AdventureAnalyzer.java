@@ -8,7 +8,7 @@ public class AdventureAnalyzer {
 
     // Global variable to store the selected file path
     private static String selectedFile;
-    public static String getFolder() {
+    public static String getFile() {
         // Path to the folder containing .txt files
         String folder = "adventures/";
 
@@ -25,7 +25,7 @@ public class AdventureAnalyzer {
                 null,
                 filesArray,
                 filesArray[0]);
-        return folder;
+        return selectedFile;
 
     }
 

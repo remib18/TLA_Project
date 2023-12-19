@@ -16,6 +16,7 @@ public class LexicalAnalysis {
     private Integer state;
     private final List<Token<?>> res;
     private StringBuilder buffer;
+    private boolean insideString = false;
 
     /**
      * Run the analysis
@@ -103,9 +104,17 @@ public class LexicalAnalysis {
 
         switch (symbolIndex) {
             case 101:
-                // On commence à enregistrer une nouvelle chaîne de caractères
-                // mais sans enregistrer le token "
-                buffer = new StringBuilder();
+                // On commence à enregistrer une nouvelle chaîne de caractères mais sans enregistrer le token "
+                // Lorsque l'on rencontre un nouveau ", on enregistre le token
+                if (insideString) {
+                    // Si nous sommes à l'intérieur d'une chaîne de caractères, nous enregistrons le token strValue
+                    tokenType = Tokens.strValue;
+                    tokenValue = buffer.toString();
+                    insideString = false;
+                } else {
+                    buffer = new StringBuilder();
+                    insideString = true;
+                }
                 break;
             case 102:
                 String bufferContent = buffer.toString();
@@ -113,8 +122,6 @@ public class LexicalAnalysis {
                     tokenType = Tokens.setTitle;
                 } else if (bufferContent.equals("addLocation")) {
                     tokenType = Tokens.addLocation;
-                } else {
-                    tokenType = Tokens.strValue;
                 }
                 tokenValue = bufferContent;
                 break;

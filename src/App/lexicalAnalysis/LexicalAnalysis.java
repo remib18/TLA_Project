@@ -103,7 +103,9 @@ public class LexicalAnalysis {
 
         switch (symbolIndex) {
             case 101:
-                // On ne fait rien pour le cas 101 car nous ne voulons pas enregistrer un token pour un "
+                // On commence à enregistrer une nouvelle chaîne de caractères
+                // mais sans enregistrer le token "
+                buffer = new StringBuilder();
                 break;
             case 102:
                 String bufferContent = buffer.toString();
@@ -127,7 +129,7 @@ public class LexicalAnalysis {
                 tokenType = Tokens.statementEnd;
                 break;
             default:
-                throw new UnexpectedTokenException("Unexpected token with symbol index " + symbolIndex);
+                throw new UnexpectedTokenException(buffer.toString());
         }
 
         if (tokenType != null) {

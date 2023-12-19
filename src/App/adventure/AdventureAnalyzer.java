@@ -8,7 +8,7 @@ public class AdventureAnalyzer {
 
     // Global variable to store the selected file path
     private static String selectedFile;
-    public static void main(String[] args) {
+    public static String getFolder() {
         // Path to the folder containing .txt files
         String folder = "adventures/";
 
@@ -25,14 +25,8 @@ public class AdventureAnalyzer {
                 null,
                 filesArray,
                 filesArray[0]);
+        return folder;
 
-        // Check the validity of the choice
-        if (selectedFile != null) {
-            analyzeFile(folder + selectedFile);
-
-        } else {
-            System.out.println("No file selected.");
-        }
     }
 
     // Method to list .txt files in the folder
@@ -49,11 +43,5 @@ public class AdventureAnalyzer {
         }
 
         return files;
-    }
-
-    // Method to analyze the content of the file
-    private static void analyzeFile(String filePath) {
-        // Add the code to analyze the content of the file if needed
-        JOptionPane.showMessageDialog(null, "Selected file: " + filePath, "File Analysis", JOptionPane.INFORMATION_MESSAGE);
     }
 }

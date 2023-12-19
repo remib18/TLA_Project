@@ -11,10 +11,7 @@ package App;
  *
  */
 
-import App.adventure.Adventure;
-import App.adventure.AdventureContent;
-import App.adventure.Location;
-import App.adventure.Proposition;
+import App.adventure.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,8 +57,8 @@ public class App implements ActionListener {
     private void init() {
 
         // Load adventure
-        // Todo: link to a file or prompt a file selection dialog)
-        Adventure adventure = Interpreter.interpret(null);
+        String folder = AdventureAnalyzer.getFolder();
+        Adventure adventure = Interpreter.interpret(folder);
 
         // Charge le contenu de l'aventure
         locations = adventure.locations();

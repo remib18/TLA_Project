@@ -48,21 +48,24 @@ public class GrammarSettings {
             case ' ', '\t', '\n' -> 0;
             case '"' -> 1;
             case '\\' -> 2;
-            case '-' -> 3;
-            case '>' -> 4;
-            case ';' -> 5;
-            default   -> {
-                if (Character.isDigit(c)) {
-                    yield 6;
+                case '-' -> 3;
+                case '>' -> 4;
+                case ';' -> 5;
+                case '.' -> 7;
+                case '\'' -> 7;
+                case ',' -> 7;
+                case '?' -> 7;
+                default   -> {
+                    if (Character.isDigit(c)) {
+                        yield 6;
+                    }
+                    if (Character.isWhitespace(c)) {
+                        yield 0;
+                    }
+                    else {
+                        yield 7;
+                    }
                 }
-                if (Character.isLetter(c)) {
-                    yield 7;
-                }
-                if (Character.isWhitespace(c)) {
-                    yield 0;
-                }
-                throw new IllegalCaracterException(c);
-            }
         };
     }
 

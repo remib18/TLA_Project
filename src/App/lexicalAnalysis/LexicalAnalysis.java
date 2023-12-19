@@ -114,7 +114,11 @@ public class LexicalAnalysis {
                 } else if (bufferContent.equals("addLocation")) {
                     tokenType = Tokens.addLocation;
                 }
+                else {
+                    tokenType = Tokens.strValue;
+                }
                 tokenValue = bufferContent;
+
                 break;
             case 103:
                 tokenType = Tokens.intValue;

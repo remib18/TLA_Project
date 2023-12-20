@@ -31,9 +31,6 @@ public class Interpreter {
         List<Token<?>> tokens = LexicalAnalysis.run(content);
         Node root = TreeBuilder.build(tokens);
 
-        Node.displayNode(root.getChildAt(1));
-        System.out.println("\n\n");
-
         for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
             Node child = root.getChildAt(rootChildIndex);
             switch (child.getType()) {

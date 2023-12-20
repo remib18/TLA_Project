@@ -84,7 +84,7 @@ The grammar of the language is the following :
 - C -> `-> Int Str C|ε`
 - Int -> `intVal Int|ε` with `intVal` being a digit between 0 and 9
 - Str -> `"Str'"`
-- Str' -> `charVal Str'|ε` with `charVal` being any character
+- Str' -> `charVal Str'|ε` with `charVal` being any character, including `intVal`
 
 #### The first and follow sets
 

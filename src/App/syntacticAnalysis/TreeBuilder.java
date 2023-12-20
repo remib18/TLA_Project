@@ -59,7 +59,7 @@ public class TreeBuilder {
         String title = (String) t.value();
 
         // Checking the end of the statement
-        checkTokenAndReturn(Tokens.statementEnd);
+        checkTokenAndReturn(Tokens.instructionEnd);
 
         nodeStmt.addChild(new Node(NodeType.SET_TITLE, title));
         nodeStmt.addChild(A());
@@ -76,7 +76,10 @@ public class TreeBuilder {
             return null;
         }
         List<Node> res = new ArrayList<>();
-        res.add(B());
+        Node next = B();
+        if (!Objects.isNull(next)) {
+            res.add(next);
+        }
         List<Node> prev = A();
         if (!Objects.isNull(prev)) {
             res.addAll(prev);
@@ -90,10 +93,13 @@ public class TreeBuilder {
      */
     private Node B() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.addLocation);
+        Token<?> t = checkTokenAndReturn(Tokens.addLocation, Tokens.endOfInput);
+        if (t.type() == Tokens.endOfInput) {
+            return null;
+        }
 
         // Get the int identifier
-        Token<?> t = checkTokenAndReturn(Tokens.intValue);
+       t = checkTokenAndReturn(Tokens.intValue);
         Integer id = (Integer) t.value();
 
         // Get the string description
@@ -104,7 +110,7 @@ public class TreeBuilder {
         node.addChild(C());
 
         // Check the end of the statement
-        checkTokenAndReturn(Tokens.statementEnd);
+        checkTokenAndReturn(Tokens.instructionEnd);
 
         return node;
     }
@@ -118,32 +124,18 @@ public class TreeBuilder {
             return null;
         }
         List<Node> res = new ArrayList<>();
-        Token<?> t = readToken();
-        if (Objects.isNull(t)) {
-            throw new UnexpectedTokenException("Expected a token, but found null");
-        }
-        if (t.type() != Tokens.arrow) {
-            throw new UnexpectedTokenException(new Tokens[]{Tokens.arrow}, t.type());
+        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.instructionEnd);
+        if (t.type() == Tokens.instructionEnd) {
+            cursor--;
+            return res;
         }
 
         // Get the int identifier
-        t = readToken();
-        if (Objects.isNull(t)) {
-            throw new UnexpectedTokenException("Expected a token, but found null");
-        }
-        if (t.type() != Tokens.intValue) {
-            throw new UnexpectedTokenException(new Tokens[]{Tokens.intValue}, t.type());
-        }
+        t = checkTokenAndReturn(Tokens.intValue);
         Integer id = (Integer) t.value();
 
         // Get the string description
-        t = readToken();
-        if (Objects.isNull(t)) {
-            throw new UnexpectedTokenException("Expected a token, but found null");
-        }
-        if (t.type() != Tokens.strValue) {
-            throw new UnexpectedTokenException(new Tokens[]{Tokens.strValue}, t.type());
-        }
+        t = checkTokenAndReturn(Tokens.strValue);
         String description = (String) t.value();
 
         res.add(new Node(NodeType.OPTION_DEFINITION, id, description));
@@ -202,6 +194,6 @@ public class TreeBuilder {
         if (!Arrays.asList(expected).contains(t.type())) {
             throw new UnexpectedTokenException(expected, t.type());
         }
-        return readToken();
+        return t;
     }
 }

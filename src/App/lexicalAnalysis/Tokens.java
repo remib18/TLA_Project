@@ -4,9 +4,10 @@ public enum Tokens {
     setTitle,
     addLocation,
     arrow,
-    statementEnd,
+    instructionEnd,
     intValue,
-    strValue;
+    strValue,
+    endOfInput;
 
     @Override
     public String toString() {
@@ -16,7 +17,8 @@ public enum Tokens {
             case arrow -> "arrow";
             case intValue -> "intValue";
             case strValue -> "strValue";
-            case statementEnd -> "statementEnd";
+            case instructionEnd -> "statementEnd";
+            case endOfInput -> "endOfInput";
         };
     }
 }

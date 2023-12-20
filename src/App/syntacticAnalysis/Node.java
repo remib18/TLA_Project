@@ -113,14 +113,22 @@ public class Node {
      * @param node node to display
      * @param depth indentation level
      */
-    static void displayNode(Node node, int depth) {
-        String ident = "  ".repeat(depth);
+    private static void displayNode(Node node, int depth) {
+        String ident = " \t\t".repeat(depth);
         int nbNoeudsEnfants =  node.getNumberOfChild();
-        String s = STR."\{ident}\{node} (\{nbNoeudsEnfants} child nodes";
+        String s = STR."\{ident}\{node} (\{nbNoeudsEnfants} child nodes)";
         System.out.println(s);
         for(int i = 0; i < nbNoeudsEnfants; i++) {
             displayNode(node.getChildAt(i), depth + 1);
         }
+    }
+
+    /**
+     * Display a node in the console
+     * @param node node to display
+     */
+    public static void displayNode(Node node) {
+        displayNode(node, 0);
     }
 
 }

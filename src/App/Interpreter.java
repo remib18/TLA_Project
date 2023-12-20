@@ -31,28 +31,40 @@ public class Interpreter {
         List<Token<?>> tokens = LexicalAnalysis.run(content);
         Node root = TreeBuilder.build(tokens);
 
-        for (int i = 0; i < root.getNumberOfChild(); i++) {
-            Node child = root.getChildAt(i);
-            if (child.getType() == NodeType.SET_TITLE) {
-                title = (String) child.getArg1();
-            }
-            else if (child.getType() == NodeType.ADD_LOCATION) {
-                List<Proposition> propositions = new ArrayList<>();
-                int id = (int) child.getArg1();
-                String description = (String) child.getArg2();
-                int j=i+1;
-                while (j < root.getNumberOfChild() && root.getChildAt(j).getType() == NodeType.OPTION_DEFINITION) {
-                    Node optionChild = root.getChildAt(j);
-                    Proposition proposition = new Proposition((String) optionChild.getArg2(), (Integer) optionChild.getArg1());
-                    propositions.add(proposition);
-                    j++;
+        Node.displayNode(root.getChildAt(1));
+        System.out.println("\n\n");
+
+        for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
+            Node child = root.getChildAt(rootChildIndex);
+            switch (child.getType()) {
+                case SET_TITLE -> title = (String) child.getArg1();
+                case ADD_LOCATION -> {
+                    int id = (int) child.getArg1();
+                    String description = (String) child.getArg2();
+                    Location location = new Location(id, description, getPropositions(child));
+                    locations.put((Integer) child.getArg1(), location);
                 }
-                Location location = new Location(id, description, propositions);
-                locations.put((Integer) child.getArg1(), location);
+                case STATEMENT -> throw new RuntimeException("Statement node should not be here");
+                case OPTION_DEFINITION -> throw new RuntimeException("Option definition node should not be here");
             }
         }
-            return new Adventure(title, locations);
+        return new Adventure(title, locations);
+    }
+
+    private static List<Proposition> getPropositions(Node node) {
+        if (node.getType() != NodeType.ADD_LOCATION) {
+            throw new IllegalArgumentException("Node is not a location");
         }
+        List<Proposition> propositions = new ArrayList<>();
+        for (int i = 0; i < node.getNumberOfChild(); i++) {
+            Node child = node.getChildAt(i);
+            if (child.getType() == NodeType.OPTION_DEFINITION) {
+                Proposition proposition = new Proposition((String) child.getArg2(), (Integer) child.getArg1());
+                propositions.add(proposition);
+            }
+        }
+        return propositions;
+    }
 
     /**
      * Reads the content of a file

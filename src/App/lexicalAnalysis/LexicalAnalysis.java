@@ -74,8 +74,11 @@ public class LexicalAnalysis {
         Integer symbolIndex;
         do {
             c = readChar();
+            if (Objects.isNull(c)) {
+                res.add(new Token<>(Tokens.endOfInput, null));
+                continue;
+            }
             symbolIndex = GrammarSettings.getTransition(state, c);
-            System.out.println(c);
             if (symbolIndex >= 100) {
                 registerToken(symbolIndex);
                 state = 0;
@@ -128,18 +131,14 @@ public class LexicalAnalysis {
                 tokenType = Tokens.arrow;
                 break;
             case 105:
-                tokenType = Tokens.statementEnd;
+                tokenType = Tokens.instructionEnd;
                 break;
             default:
-                if (tokenType == null) {
-                    throw new UnexpectedTokenException(STR."Unexpected token with symbol index : \{symbolIndex} and buffer : \{buffer.toString()}");
-                }
+                throw new UnexpectedTokenException(STR."Unexpected token with symbol index : \{symbolIndex} and buffer : \{buffer.toString()}");
         }
 
-        if (tokenType != null) {
-            Token<?> token = new Token<>(tokenType, tokenValue);
-            res.add(token);
-        }
+        Token<?> token = new Token<>(tokenType, tokenValue);
+        res.add(token);
     }
 
     /**

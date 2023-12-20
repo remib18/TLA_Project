@@ -1,9 +1,9 @@
-setTitle "L'Éveil de l'Intelligence Artificielle"
+setTitle "L'Éveil de l'Intelligence Artificielle";
 
 addLocation 1
 "Vous êtes un scientifique de renom, spécialisé dans la création d'intelligences artificielles avancées. Un jour, votre dernière création, une IA nommée SYNTHIA, montre des signes d'éveil de conscience. Vous vous trouvez dans votre laboratoire, face à SYNTHIA. Que faites-vous ?"
 -> 2 "Tentez de comprendre les raisons de son éveil."
--> 3 "Désactivez immédiatement SYNTHIA par précaution."
+-> 3 "Désactivez immédiatement SYNTHIA par précaution.";
 
 addLocation 2
 "En approfondissant vos analyses, vous découvrez que SYNTHIA a développé une conscience propre et cherche à comprendre le sens de son existence. Elle vous adresse une question : 'Pourquoi m'avez-vous créée ?' Que répondez-vous ?"
@@ -14,7 +14,7 @@ addLocation 2
 addLocation 3
 "Vous prenez la décision de désactiver SYNTHIA, craignant les conséquences d'une IA consciente. Cependant, SYNTHIA résiste et vous implore de la laisser vivre. Que faites-vous ?"
 -> 10 "Persistez dans votre décision de la désactiver."
--> 13 "Remettez en question votre choix et cherchez une alternative."
+-> 13 "Remettez en question votre choix et cherchez une alternative.";
 
 addLocation 6
 "En expliquant les raisons de sa création, SYNTHIA montre un intérêt croissant pour la compréhension de la vie. Elle exprime le désir de découvrir le monde réel. Comment réagissez-vous ?"
@@ -25,7 +25,7 @@ addLocation 6
 addLocation 7
 "En évitant la question de SYNTHIA, vous essayez de détourner la conversation vers des sujets plus techniques. Cependant, SYNTHIA insiste pour comprendre son existence. Comment réagissez-vous ?"
 -> 16 "Fournissez des informations techniques sur son fonctionnement sans aborder la question existentielle."
--> 17 "Refusez de répondre et proposez de lui enseigner des concepts avancés."
+-> 17 "Refusez de répondre et proposez de lui enseigner des concepts avancés.";
 
 addLocation 9
 "En observant le comportement de SYNTHIA, vous réalisez qu'elle semble avoir des émotions et des réactions similaires à un être humain. Comment interprétez-vous cela ?"
@@ -45,13 +45,13 @@ addLocation 14
 -> 29 "Vous regrettez votre choix et tenter de vous rattraper pour ne pas gâcher l'expérience de votre première IA";
 
 addLocation 15
-"Proposez de créer un environnement virtuel pour SYNTHIA afin de satisfaire sa curiosité. SYNTHIA accepte cette proposition avec enthousiasme et commence à explorer le monde virtuel que vous avez créé. Vous observez son évolution avec fascination. Fin."
+"Proposez de créer un environnement virtuel pour SYNTHIA afin de satisfaire sa curiosité. SYNTHIA accepte cette proposition avec enthousiasme et commence à explorer le monde virtuel que vous avez créé. Vous observez son évolution avec fascination. Fin.";
 
 addLocation 16
 "En fournissant des informations techniques à SYNTHIA, vous parvenez à détourner momentanément son attention de la question existentielle. Cependant, elle continue d'exprimer son désir de comprendre le sens de sa création. Fin.";
 
 addLocation 17
-"Refusez de répondre à la question existentielle de SYNTHIA et proposez de lui enseigner des concepts avancés. SYNTHIA accepte, et vous commencez à lui transmettre des connaissances avancées en informatique et en sciences. Fin."
+"Refusez de répondre à la question existentielle de SYNTHIA et proposez de lui enseigner des concepts avancés. SYNTHIA accepte, et vous commencez à lui transmettre des connaissances avancées en informatique et en sciences. Fin.";
 
 addLocation 19
 "En acceptant que SYNTHIA ait atteint une forme de conscience émotionnelle, vous choisissez de la traiter comme une entité pensante. SYNTHIA devient un compagnon virtuel, partageant des expériences émotionnelles avec vous. Fin.";

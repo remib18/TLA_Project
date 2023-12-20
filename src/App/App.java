@@ -43,10 +43,9 @@ public class App implements ActionListener {
     JFrame frame;
     JPanel mainPanel;
 
-    /**
-     * Labels composant la zone de texte
-     */
-    JLabel[] labels;
+    JTextPane textPane;
+
+    JScrollPane scrollPane;
 
     /**
      * Boutons de proposition
@@ -75,7 +74,10 @@ public class App implements ActionListener {
         locations = adventure.locations();
 
         // Prépare l'IHM
-        labels = new JLabel[linesNumber];
+        textPane = new JTextPane();
+        textPane.setEditable(false);
+        textPane.setPreferredSize(new Dimension(600, 400));
+
         btns = new ArrayList<>();
 
         frame = new JFrame(adventure.title());
@@ -86,16 +88,13 @@ public class App implements ActionListener {
 
         frame.add(mainPanel);
 
-        for(int i = 0; i< linesNumber; i++) {
-            labels[i] = new JLabel(" ");
-            mainPanel.add(labels[i], new GridBagConstraints() {{
-                this.gridwidth = GridBagConstraints.REMAINDER;
-                this.anchor = GridBagConstraints.WEST;
-                this.insets = new Insets(0,20,0,20);
-            }});
-            labels[i].setMinimumSize(new Dimension(750, 20));
-            labels[i].setPreferredSize(new Dimension(750, 20));
-        }
+        scrollPane = new JScrollPane(textPane);
+
+        mainPanel.add(scrollPane, new GridBagConstraints() {{
+            this.gridwidth = GridBagConstraints.REMAINDER;
+            this.anchor = GridBagConstraints.WEST;
+            this.insets = new Insets(0,20,0,20);
+        }});
 
         // Démarre l'aventure au lieu n° 1
         currentLocation = locations.get(1);
@@ -114,7 +113,7 @@ public class App implements ActionListener {
             mainPanel.remove(btn);
         }
         btns.clear();
-        display(currentLocation.description().split("\n"));
+        display(currentLocation.description());
         frame.pack();
         for(int i = 0; i< currentLocation.propositions().size(); i++) {
             JButton btn = new JButton(STR."<html><p>\{currentLocation.propositions().get(i).text()}</p></html>");
@@ -146,7 +145,7 @@ public class App implements ActionListener {
         if (location != null) {
 
             // Affiche la proposition qui vient d'être choisie par le joueur
-            display(new String[]{STR."> \{proposition.text()}"});
+            display(STR."> \{proposition.text()}");
 
             // Affichage du nouveau lieu et création des boutons des nouvelles propositions
             currentLocation = location;
@@ -162,15 +161,8 @@ public class App implements ActionListener {
      * Gère l'affichage dans la zone de texte, avec un effet de défilement
      * (comme dans un terminal)
      */
-    private void display(String[] contenu) {
-        int n = contenu.length;
-        for (int i = 0; i < linesNumber -(n+1); i++) {
-            labels[i].setText(labels[i + n + 1].getText());
-        }
-        labels[linesNumber -(n+1)].setText(" ");
-        for(int i = 0; i<n; i++) {
-            labels[linesNumber -n+i].setText(contenu[i]);
-        }
+    private void display(String contenu) {
+        textPane.setText(contenu);
     }
 
 }

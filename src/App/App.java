@@ -76,7 +76,9 @@ public class App implements ActionListener {
         // Prépare l'IHM
         textPane = new JTextPane();
         textPane.setEditable(false);
-        textPane.setPreferredSize(new Dimension(600, 400));
+        textPane.setFont(new Font("monospaced", Font.PLAIN, 18));
+        textPane.setPreferredSize(new Dimension(1000, 400));
+        textPane.setMinimumSize(new Dimension(600, 400));
 
         btns = new ArrayList<>();
 

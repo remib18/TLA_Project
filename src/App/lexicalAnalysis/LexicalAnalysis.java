@@ -108,7 +108,7 @@ public class LexicalAnalysis {
         switch (symbolIndex) {
             case 101:
                 tokenType = Tokens.strValue;
-                tokenValue = buffer.substring(1, buffer.length() - 1);
+                tokenValue = buffer.substring(1, buffer.length());
                 break;
             case 102:
                 String bufferContent = buffer.toString();

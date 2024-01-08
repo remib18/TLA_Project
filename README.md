@@ -209,15 +209,22 @@ The syntax tree of the grammar is the following :
 
 ![Syntax tree](docs/state-machine-diagram.svg)
 
-##### The accepting states [PLUS A JOUR]
+##### The accepting states
 
-| state number | accepting   |
-|--------------|-------------|
-| 101          | A string    |
-| 102          | A keyword   |
-| 103          | An integer  |
-| 104          | An arrow    |
-| 105          | A semicolon |
+| state number | accepting               |
+|--------------|-------------------------|
+| 101          | A string                |
+| 102          | A keyword               |
+| 103          | An integer              |
+| 104          | An arrow                |
+| 105          | A semicolon             |
+| 106          | An oppening parenthesis |
+| 107          | A closing parenthesis   |
+| 108          | A plus sign             |
+| 109          | A minus sign            |
+| 110          | A colon                 |
+| 111          | A variable              |
+| 112          | An exclamation mark     |
 
 #### Translation table [PLUS A JOUR]
 

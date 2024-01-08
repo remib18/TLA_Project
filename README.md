@@ -78,15 +78,41 @@ addLocation 3 "You are in a kitchen"
 
 The grammar of the language is the following :
 
-- S -> `setTitle Str;A`
-- A -> `BA|ε`
-- B -> `addLocation Int Str C;`
-- C -> `-> Int Str C|ε`
-- Int -> `intVal Int|ε` with `intVal` being a digit between 0 and 9
-- Str -> `"Str'"`
-- Str' -> `charVal Str'|ε` with `charVal` being any character, including `intVal`
+- S -> `setTitle Str;ABCD` Permet de définir le titre et définit la suite des actions
+- A -> `setHealth Int;` Permet de définir la santé initiale
 
-#### The first and follow sets
+- B -> `FB | EB | ε` Permet de boucler sur la définition des personnages ou des objets
+- E -> `addItem Var;` Permet de créer un objet
+- F -> `addCharacter Var Int Int;` Permet de créer un personnage
+
+- C -> `setInventory C’;` Permet de définir l'inventaire initial du joueur
+- C’ -> `Var C’ | ε` Définit un objet pour l'inventaire du joueur
+
+- D -> `GD | ε` Permet de boucler sur l'ajout de lieux
+- G -> `addLocation Int Str IH;` Permet d'ajouter un lieu
+- H -> `-> M Int Str IH | ε` Permet d'ajouter une option à un lieu
+
+- I -> `(J) | ε`  Définit une action
+- J -> `J’J | ε` Permet la possibilité de plusieurs expressions dans une action
+- J’ -> `K:LVar` Définit la structure d'un condition (eg: `health:+5`, `item:+$sword` ...)
+- K -> `health | item | character` Types d'action
+- L -> `+ | -` Opération de l'action (ajouter / supprimer)
+
+- M -> `(M’) | ε` Définit une condition
+- M’ -> `NM’ | ε` Permet la possibilité de plusieurs expressions dans une condition
+- N -> `Neg N’` Définit la structure d'une condition
+- N’ -> `O | P` Permet d'avoir deux types de condition : sur les objets ou sur les personnages
+- O -> `item:Var:Int` Définit une condition sur les objets (eg: `item:$sword:1`, `item:$coin:10` ...)
+- P -> `character:Var` Définit une condition sur les personnages (eg: `character:$philip` ...)
+
+- Neg -> `! | ε` Définit une négation
+- Int -> `intVal Int | ε` Définit un nombre entier
+- Str -> `"Str'"` Définit une chaine de caractères
+- Str' -> `charVal Str' | ε`
+- Var -> `$Var'` Définit une variable
+- Var' -> `charVal Var' | ε`
+
+#### The first and follow sets [PLUS A JOUR]
 
 The first and follow sets of the grammar are the following :
 
@@ -100,13 +126,13 @@ The first and follow sets of the grammar are the following :
 | Str           | {`"`}                | {`;`, `->`}          |
 | Str'          | {`charVal`, `ε`}     | {`"`}                |
 
-#### State machine diagram
+#### State machine diagram [PLUS A JOUR]
 
 The syntax tree of the grammar is the following :
 
 ![Syntax tree](docs/state-machine-diagram.svg)
 
-##### The accepting states
+##### The accepting states [PLUS A JOUR]
 
 | state number | accepting   |
 |--------------|-------------|
@@ -116,7 +142,7 @@ The syntax tree of the grammar is the following :
 | 104          | An arrow    |
 | 105          | A semicolon |
 
-#### Translation table
+#### Translation table [PLUS A JOUR]
 
 The translation table of the grammar is the following :
 

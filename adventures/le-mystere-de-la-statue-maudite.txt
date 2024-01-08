@@ -88,7 +88,7 @@ addLocation 24 "Vous déposez votre offrande dans les orbites profondes... et la
 
 addLocation 25 "Vous faites maintenant face à une affreuse statue d'une espèce de monstre hybride. Vous remarquez les deux orbites vides, larges et creuses, apparemment profondes. Que faites-vous ?"
   -> 34 "Vous ignorez la statue et repartez sur votre gauche ?"
-  -> 48 "Vous ignorez la statue et re-partez sur votre droite ?"
+  -> 48 "Vous ignorez la statue et repartez sur votre droite ?"
   -> 21 "Vous avez l'idée de déposer une offrande dans les orbites béantes" ;
 
 addLocation 26 "De justesse, vous refermez la porte derrière vous... ouf ! vous reprenez haleine. Devant vous, commence une longue galerie, une salle qui semble avoir la même disposition et la même forme que la salle à la fresque. Vous commencez à la remonter. Vous en êtes à mi-chemin quand vous remarquez qu'elle se termine tout au fond, en face de vous, par une grille. À l'endroit précis où vous êtes, il y a une alcôve creusée dans le mur à votre droite. L'alcôve contient une statue."

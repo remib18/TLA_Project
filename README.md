@@ -209,7 +209,7 @@ The first and follow sets of the grammar are the following :
 | J             | {`health`, `item`, `character`, `ε`}|{`)`, `$`}                                        |
 | J'            | {`health`, `item`, `character`}     |{`health`, `item`, `character`, `)`, `$`}         |
 | K             | {`health`, `item`, `character`}     |{`:`}                                             |
-| L             | {`+`, `-`}                          |           {`$`} (le vrai)                        |
+| L             | {`+`, `-`}                          |{[`$`]}                                           |
 | M             | {`(`, `ε`}                          |{`intVal`, `"`}                                   |
 | M'            | {`!`, `ε`}                          |{`)`, `$`}                                        |
 | N             | {`!`}                               |{`item`, `character`, `!`, `)`, `$`}              |

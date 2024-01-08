@@ -220,7 +220,7 @@ The first and follow sets of the grammar are the following :
 | Var           | {`$`}                           |                      |
 | Var'          | {`charVal`, `ε`}                |                      |
 
-#### State machine diagram [PLUS A JOUR]
+#### State machine diagram
 
 The syntax tree of the grammar is the following :
 

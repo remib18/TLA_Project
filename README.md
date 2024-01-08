@@ -78,38 +78,38 @@ addLocation 3 "You are in a kitchen"
 
 The grammar of the language is the following :
 
-- S -> `setTitle Str;ABCD` Permet de définir le titre et définit la suite des actions
-- A -> `setHealth Int;` Permet de définir la santé initiale
+- S -> `setTitle Str;ABCD` Allows setting the title and defines the sequence of non terminal symbols
+- A -> `setHealth Int;` Allows defining the initial health
 
-- B -> `FB | EB | ε` Permet de boucler sur la définition des personnages ou des objets
-- E -> `addItem Var;` Permet de créer un objet
-- F -> `addCharacter Var Int Int;` Permet de créer un personnage
+- B -> `FB | EB | ε` Allows looping over the definition of characters or objects
+- E -> `addItem Var;` Allows creating an item
+- F -> `addCharacter Var Int Int;` Allows creating a character
 
-- C -> `setInventory C’;` Permet de définir l'inventaire initial du joueur
-- C’ -> `Var C’ | ε` Définit un objet pour l'inventaire du joueur
+- C -> `setInventory C’;` Allows defining the initial inventory of the player
+- C’ -> `Var C’ | ε`
 
-- D -> `GD | ε` Permet de boucler sur l'ajout de lieux
-- G -> `addLocation Int Str IH;` Permet d'ajouter un lieu
-- H -> `-> M Int Str IH | ε` Permet d'ajouter une option à un lieu
+- D -> `GD | ε` Allows looping over the addition of locations
+- G -> `addLocation Int Str IH;` Allows adding a location
+- H -> `-> M Int Str IH | ε` Allows adding an option to a location
 
 - I -> `(J) | ε`  Définit une action
-- J -> `J’J | ε` Permet la possibilité de plusieurs expressions dans une action
-- J’ -> `K:LVar` Définit la structure d'un condition (eg: `health:+5`, `item:+$sword` ...)
-- K -> `health | item | character` Types d'action
-- L -> `+ | -` Opération de l'action (ajouter / supprimer)
+- J -> `J’J | ε` Allows the possibility of multiple expressions in an action
+- J’ -> `K:LVar` Defines the structure of a condition (e.g., `health:+5`, `item:+$sword` ...)
+- K -> `health | item | character` Types of action
+- L -> `+ | -` Action operation (add / remove)
 
-- M -> `(M’) | ε` Définit une condition
-- M’ -> `NM’ | ε` Permet la possibilité de plusieurs expressions dans une condition
-- N -> `Neg N’` Définit la structure d'une condition
-- N’ -> `O | P` Permet d'avoir deux types de condition : sur les objets ou sur les personnages
-- O -> `item:Var:Int` Définit une condition sur les objets (eg: `item:$sword:1`, `item:$coin:10` ...)
-- P -> `character:Var` Définit une condition sur les personnages (eg: `character:$philip` ...)
+- M -> `(M’) | ε` Defines a condition
+- M’ -> `NM’ | ε` Allows the possibility of multiple expressions in a condition
+- N -> `Neg N’`  Defines the structure of a condition
+- N’ -> `O | P` Allows two types of conditions: on objects or characters
+- O -> `item:Var:Int` Defines a condition on objects (e.g., `item:$sword:1`, `item:$coin:10` ...)
+- P -> `character:Var` Defines a condition on characters (eg: `character:$philip` ...)
 
-- Neg -> `! | ε` Définit une négation
-- Int -> `intVal Int | ε` Définit un nombre entier
-- Str -> `"Str'"` Définit une chaine de caractères
+- Neg -> `! | ε` Defines a negation
+- Int -> `intVal Int | ε` Defines an integer
+- Str -> `"Str'"` Defines a string
 - Str' -> `charVal Str' | ε`
-- Var -> `$Var'` Définit une variable
+- Var -> `$Var'` Defines a variable
 - Var' -> `charVal Var' | ε`
 
 #### The first and follow sets [PLUS A JOUR]

@@ -193,35 +193,35 @@ The grammar of the language is the following :
 
 The first and follow sets of the grammar are the following :
 
-| Non-terminal  | First set                       | Follow set           |
-|---------------|---------------------------------|----------------------|
-| S             | {`setTitle`}                    |                      |
-| A             | {`setHealth`}                   |                      |
-| B             | {`addCharacter`, `addItem`, `ε`} |                      |
-| E             | {`addItem`}                     |                      |
-| F             | {`addCharacter`}                |                      |
-| C             | {`setInventory`}                |                      |
-| C'            | {`$`, `ε`}                      |                      |
-| D             | {`addLocation`, `ε`}            |                      |
-| G             | {`addLocation`}                 |                      |
-| H             | {`->`, `ε`}                     |                      |
-| I             | {`(`, `ε`}                      |                      |
-| J             | {`health`, `item`, `character`, `ε`} |                  |
-| J'            | {`health`, `item`, `character`} |                      |
-| K             | {`health`, `item`, `character`} |                      |
-| L             | {`+`, `-`}                      |                      |
-| M             | {`(`, `ε`}                      |                      |
-| M'            | {`!`, `ε`}                      |                      |
-| N             | {`!`}                           |                      |
-| N'            | {`item`, `character`}           |                      |
-| O             | {`item`}                        |                      |
-| P             | {`character`}                   |                      |
-| Neg           | {`!`, `ε`}                      |                      |
-| Int           | {`intVal`, `ε`}                 |                      |
-| Str           | {`"`}                           |                      |
-| Str'          | {`charVal`, `ε`}                |                      |
-| Var           | {`$`}                           |                      |
-| Var'          | {`charVal`, `ε`}                |                      |
+| Non-terminal  | First set                           | Follow set                                       |
+|---------------|-------------------------------------|--------------------------------------------------|
+| S             | {`setTitle`}                        |{`$`}                                             |
+| A             | {`setHealth`}                       |{`addItem`, `addCharacter`, `setInventory`}       |
+| B             | {`addCharacter`, `addItem`, `ε`}    |{`setInventory`, `$`}                             |
+| E             | {`addItem`}                         |{`addItem`, `addCharacter`, `setInventory`, `$`}  |
+| F             | {`addCharacter`}                    |{`addItem`, `addCharacter`, `setInventory`, `$`}  |
+| C             | {`setInventory`}                    |{`addLocation`, `$`}                              |
+| C'            | {`$`, `ε`}                          |{`->`, `addLocation`, `$`}                        |
+| D             | {`addLocation`, `ε`}                |{`$`}                                             |
+| G             | {`addLocation`}                     |{`addLocation`, `$`}                              |
+| H             | {`->`, `ε`}                         |{`addLocation`, `$`}                              |
+| I             | {`(`, `ε`}                          |{`->`, `addLocation`, `$`}                        |
+| J             | {`health`, `item`, `character`, `ε`}|{`)`, `$`}                                        |
+| J'            | {`health`, `item`, `character`}     |{`health`, `item`, `character`, `)`, `$`}         |
+| K             | {`health`, `item`, `character`}     |{`:`}                                             |
+| L             | {`+`, `-`}                          |           {`$`} (le vrai)                        |
+| M             | {`(`, `ε`}                          |{`intVal`, `"`}                                   |
+| M'            | {`!`, `ε`}                          |{`)`, `$`}                                        |
+| N             | {`!`}                               |{`item`, `character`, `!`, `)`, `$`}              |
+| N'            | {`item`, `character`}               |{`item`, `character`, `!`, `)`, `$`}              |
+| O             | {`item`}                            |{`item`, `character`, `!`, `)`, `$`}              |
+| P             | {`character`}                       |{`item`, `character`, `!`, `)`, `$`}              |
+| Neg           | {`!`, `ε`}                          |{`item`, `character`}                             |
+| Int           | {`intVal`, `ε`}                     |{`intVal`, `"`, `item`, `;`, `$`}                 |
+| Str           | {`"`}                               |{`intVal`, `(`, `->`, `addLocation`, `;`, `$`}    |
+| Str'          | {`charVal`, `ε`}                    |{`"`, `$`}                                        |
+| Var           | {`$`}                               |{`health`, `item`, `character`, `!`, `)`, `$`}    |
+| Var'          | {`charVal`, `ε`}                    |{`health`, `item`, `character`, `!`, `)`, `$`}    |
 
 #### State machine diagram
 

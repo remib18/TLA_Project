@@ -195,6 +195,9 @@ The first and follow sets of the grammar are the following :
 
 | Non-terminal  | First set                       | Follow set           |
 |---------------|---------------------------------|----------------------|
+| S             | {`setTitle`}                    |                      |
+| A             | {`setHealth`}                   |                      |
+| B             | {`addCharacter`, `addItem`, `ε`} |                      |
 | E             | {`addItem`}                     |                      |
 | F             | {`addCharacter`}                |                      |
 | C             | {`setInventory`}                |                      |

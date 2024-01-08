@@ -193,15 +193,32 @@ The grammar of the language is the following :
 
 The first and follow sets of the grammar are the following :
 
-| Non-terminal  | First set            | Follow set           |
-|---------------|----------------------|----------------------|
-| S             | {`setTitle`}         | {`$`}                |
-| A             | {`addLocation`, `ε`} | {`addLocation`, `$`} |
-| B             | {`addLocation`}      | {`addLocation`, `$`} |
-| C             | {`->`, `ε`}          | {`;`, `->`}          |
-| Int           | {`intVal`, `ε`}      | {`"`}                |
-| Str           | {`"`}                | {`;`, `->`}          |
-| Str'          | {`charVal`, `ε`}     | {`"`}                |
+| Non-terminal  | First set                       | Follow set           |
+|---------------|---------------------------------|----------------------|
+| E             | {`addItem`}                     |                      |
+| F             | {`addCharacter`}                |                      |
+| C             | {`setInventory`}                |                      |
+| C'            | {`$`, `ε`}                      |                      |
+| D             | {`addLocation`, `ε`}            |                      |
+| G             | {`addLocation`}                 |                      |
+| H             | {`->`, `ε`}                     |                      |
+| I             | {`(`, `ε`}                      |                      |
+| J             | {`health`, `item`, `character`, `ε`} |                  |
+| J'            | {`health`, `item`, `character`} |                      |
+| K             | {`health`, `item`, `character`} |                      |
+| L             | {`+`, `-`}                      |                      |
+| M             | {`(`, `ε`}                      |                      |
+| M'            | {`!`, `ε`}                      |                      |
+| N             | {`!`}                           |                      |
+| N'            | {`item`, `character`}           |                      |
+| O             | {`item`}                        |                      |
+| P             | {`character`}                   |                      |
+| Neg           | {`!`, `ε`}                      |                      |
+| Int           | {`intVal`, `ε`}                 |                      |
+| Str           | {`"`}                           |                      |
+| Str'          | {`charVal`, `ε`}                |                      |
+| Var           | {`$`}                           |                      |
+| Var'          | {`charVal`, `ε`}                |                      |
 
 #### State machine diagram [PLUS A JOUR]
 

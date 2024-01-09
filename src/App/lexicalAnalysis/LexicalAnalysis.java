@@ -112,26 +112,48 @@ public class LexicalAnalysis {
                 break;
             case 102:
                 String bufferContent = buffer.toString();
-                if (bufferContent.equals("setTitle")) {
-                    tokenType = Tokens.setTitle;
-                } else if (bufferContent.equals("addLocation")) {
-                    tokenType = Tokens.addLocation;
-                }
-                else {
-                    tokenType = Tokens.strValue;
-                }
+                tokenType = switch (bufferContent) {
+                    case "setTitle" -> Tokens.setTitle;
+                    case "setHealth" -> Tokens.setHealth;
+                    case "setInventory" -> Tokens.setInventory;
+                    case "addCharacter" -> Tokens.addCharacter;
+                    case "addItem" -> Tokens.addItem;
+                    case "addLocation" -> Tokens.addLocation;
+                    default -> Tokens.strValue;
+                };
                 tokenValue = bufferContent;
-
                 break;
             case 103:
+                tokenType = Tokens.varValue;
+                tokenValue = buffer.substring(1, buffer.length());
+                break;
+            case 104:
                 tokenType = Tokens.intValue;
                 tokenValue = Integer.parseInt(buffer.toString());
                 break;
-            case 104:
+            case 105:
                 tokenType = Tokens.arrow;
                 break;
-            case 105:
+            case 106:
+                tokenType = Tokens.minus;
+                break;
+            case 107:
                 tokenType = Tokens.instructionEnd;
+                break;
+            case 108:
+                tokenType = Tokens.colon;
+                break;
+            case 109:
+                tokenType = Tokens.openParenthesis;
+                break;
+            case 110:
+                tokenType = Tokens.closeParenthesis;
+                break;
+            case 111:
+                tokenType = Tokens.plus;
+                break;
+            case 112:
+                tokenType = Tokens.exclamationPoint;
                 break;
             default:
                 throw new UnexpectedTokenException(STR."Unexpected token with symbol index : \{symbolIndex} and buffer : \{buffer.toString()}");

@@ -89,4 +89,13 @@ public record Location(Integer id, String description, List<Proposition> proposi
     public List<Proposition> propositions() {
         return propositions;
     }
+
+    /**
+     * Get the events of the location
+     * @return The events of the location
+     */
+    @Override
+    public List<Event> events() {
+        return events;
+    }
 }

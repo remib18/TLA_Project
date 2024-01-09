@@ -211,8 +211,8 @@ The first and follow sets of the grammar are the following :
 | K            | {`health`, `inventory`, `team`}      | {`:`}                                                                                     |
 | L            | {`+`, `-`}                           | {[`$`]}                                                                                   |
 | M            | {`(`, `ε`}                           | {`intVal`, `"`}                                                                           |
-| M'           | {`!`, `ε`}                           | {`)`, `$`}                                                                                |
-| N            | {`!`, `ε`}                           | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| M'           | {`!`, `ε`, `item`, `character`}      | {`)`, `$`}                                                                                |
+| N            | {`!`, `ε`, `item`, `character`}      | {`item`, `character`, `!`, `)`, `$`}                                                      |
 | N'           | {`item`, `character`}                | {`item`, `character`, `!`, `)`, `$`}                                                      |
 | O            | {`item`}                             | {`item`, `character`, `!`, `)`, `$`}                                                      |
 | P            | {`character`}                        | {`item`, `character`, `!`, `)`, `$`}                                                      |

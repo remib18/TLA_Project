@@ -1,4 +1,4 @@
-# AdventureLang
+![image](https://github.com/remib18/TLA_Project/assets/95913165/95027402-fbfb-4091-bcad-a873519a0bb2)# AdventureLang
 
 This project was developed for our third year of computer science at the University of Tours, France.
 
@@ -223,6 +223,30 @@ The first and follow sets of the grammar are the following :
 | Var           | {`$`}                               |{`health`, `item`, `character`, `!`, `)`, `$`}    |
 | Var'          | {`charVal`, `ε`}                    |{`health`, `item`, `character`, `!`, `)`, `$`}    |
 
+| state | setTitle            | setHealth        | setInventory       | addItem        | addCharacter                | addLocation               | health   | item | character     | intVal |charVal | `"` | `;` |`-`   | `(`   | `)`   | `+`   | `!`   |`$`    | `intVal` | `charVal` | `$` |
+|-------|---------------------|------------------|--------------------|----------------|-----------------------------|---------------------------|----------|------|---------------|--------|--------|-----|--------------|-------|-------|-------|-------|-------|----------|-----------|-----|
+| **S** | *setTitle Str;ABCD* |                  |                    |                |                             |                           |          |        |             | erreur | erreur |  erreur |   erreur      |   erreur       |
+| **A** |                     | *setHealth Int;* |                    |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **B** |                     |                  |                    | *EB*           | *FB*                        |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **C** |                     |                  | *setInventory C’;* |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **C'** |                     |                  | *setInventory C’;* |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **D** |                     |                  |                   |                |                             | *GD | ε*                  |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **E** |                     |                  |                   | *addItem Var;* |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **F** |                     |                  |                   |                | *addCharacter Var Int Int;* |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **G** |                     |                  |                   |                |                             | *addLocation Int Str IH;* |          |        |             |       |      |      |         |         |      |      |      |         |         |        |
+| **H** |                     |                  |                   |                |                             |                           |          |        |             |       |      |      |         |         |      |      |      |         |         |        |
+| **I** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **J** |                     |                  |                   |                |                             |                           | *J’J*    | *J’J*  | *J’J*       |      |      |      |         |         |      |      |      |         |         |        |
+| **K** |                     |                  |                   |                |                             |                           | *health* | *item* | *character* |      |      |      |         |         |      |      |      |         |         |        |
+| **L** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **M** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **O** |                     |                  |                   |                |                             |                           |          |        |             | 1       |      |      |         |         |      |      |      |         |         |        |
+| **P** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **Neg** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **Int** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+| **Str** |                     |                  |                   |                |                             |                           |          |        |                   |      |      |         |         |      |      |      |         |         |        |
+| **Var** |                     |                  |                   |                |                             |                           |          |        |             |      |      |      |         |         |      |      |      |         |         |        |
+
 #### State machine diagram
 
 The syntax tree of the grammar is the following :
@@ -246,7 +270,7 @@ The syntax tree of the grammar is the following :
 | 111          | A variable              |
 | 112          | An exclamation mark     |
 
-#### Translation table [PLUS A JOUR]
+#### Translation table
 
 The translation table of the grammar is the following :
 

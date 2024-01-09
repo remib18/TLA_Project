@@ -1,4 +1,4 @@
-![image](https://github.com/remib18/TLA_Project/assets/95913165/95027402-fbfb-4091-bcad-a873519a0bb2)# AdventureLang
+# AdventureLang
 
 This project was developed for our third year of computer science at the University of Tours, France.
 

@@ -193,35 +193,35 @@ The grammar of the language is the following :
 
 The first and follow sets of the grammar are the following :
 
-| Non-terminal | First set                            | Follow set                                                                      |
-|--------------|--------------------------------------|---------------------------------------------------------------------------------|
-| S            | {`setTitle`}                         | {`$`}                                                                           |
-| A            | {`setHealth`}                        | {`addItem`, `addCharacter`, `setInventory`}                                     |
-| B            | {`addCharacter`, `addItem`, `ε`}     | {`setInventory`, `$`}                                                           |
-| E            | {`addItem`}                          | {`addItem`, `addCharacter`, `setInventory`, `$`}                                |
-| F            | {`addCharacter`}                     | {`addItem`, `addCharacter`, `setInventory`, `$`}                                |
-| C            | {`setInventory`}                     | {`addLocation`, `$`}                                                            |
-| C'           | {`$`, `ε`}                           | {`;`, `$`}                                                                      |
-| D            | {`addLocation`, `ε`}                 | {`$`}                                                                           |
-| G            | {`addLocation`}                      | {`addLocation`, `$`}                                                            |
-| H            | {`->`, `ε`}                          | {`;`, `$`}                                                                      |
-| I            | {`(`, `ε`}                           | {`->`, `;`, `$`}                                                                |
-| J            | {`health`, `inventory`, `team`, `ε`} | {`)`, `$`}                                                                      |
-| J'           | {`health`, `inventory`, `team`}      | {`health`, `inventory`, `team`, `)`, `$`}                                       |
-| K            | {`health`, `inventory`, `team`}      | {`:`}                                                                           |
-| L            | {`+`, `-`}                           | {[`$`]}                                                                         |
-| M            | {`(`, `ε`}                           | {`intVal`, `"`}                                                                 |
-| M'           | {`!`, `ε`}                           | {`)`, `$`}                                                                      |
-| N            | {`!`, `ε`}                           | {`item`, `character`, `!`, `)`, `$`}                                            |
-| N'           | {`item`, `character`}                | {`item`, `character`, `!`, `)`, `$`}                                            |
-| O            | {`item`}                             | {`item`, `character`, `!`, `)`, `$`}                                            |
-| P            | {`character`}                        | {`item`, `character`, `!`, `)`, `$`}                                            |
-| Neg          | {`!`, `ε`}                           | {`item`, `character`}                                                           |
-| Int          | {`intVal`, `ε`}                      | {`intVal`, `"`, [`$`], `item`, `character`, `;`, `!`, `)`, `$`}                 |
-| Str          | {`"`}                                | {`(`, `->`, `;`, `$`}                                                           |
-| Str'         | {`charVal`, `ε`}                     | {`"`, `$`}                                                                      |
-| Var          | {`$`}                                | {`health`, `inventory`, `team`, `item`, `character`, `!`, `)`, `:`, `;`, `$`}   |
-| Var'         | {`charVal`, `ε`}                     | {`health`, `inventory`, `team`, `item`, `character`, `!`, `)`, `:`, `;`, `$`}   |
+| Non-terminal | First set                            | Follow set                                                                                |
+|--------------|--------------------------------------|-------------------------------------------------------------------------------------------|
+| S            | {`setTitle`}                         | {`$`}                                                                                     |
+| A            | {`setHealth`}                        | {`addItem`, `addCharacter`, `setInventory`}                                               |
+| B            | {`addCharacter`, `addItem`, `ε`}     | {`setInventory`, `$`}                                                                     |
+| E            | {`addItem`}                          | {`addItem`, `addCharacter`, `setInventory`, `$`}                                          |
+| F            | {`addCharacter`}                     | {`addItem`, `addCharacter`, `setInventory`, `$`}                                          |
+| C            | {`setInventory`}                     | {`addLocation`, `$`}                                                                      |
+| C'           | {`$`, `ε`}                           | {`;`, `$`}                                                                                |
+| D            | {`addLocation`, `ε`}                 | {`$`}                                                                                     |
+| G            | {`addLocation`}                      | {`addLocation`, `$`}                                                                      |
+| H            | {`->`, `ε`}                          | {`;`, `$`}                                                                                |
+| I            | {`(`, `ε`}                           | {`->`, `;`, `$`}                                                                          |
+| J            | {`health`, `inventory`, `team`, `ε`} | {`)`, `$`}                                                                                |
+| J'           | {`health`, `inventory`, `team`}      | {`health`, `inventory`, `team`, `)`, `$`}                                                 |
+| K            | {`health`, `inventory`, `team`}      | {`:`}                                                                                     |
+| L            | {`+`, `-`}                           | {[`$`]}                                                                                   |
+| M            | {`(`, `ε`}                           | {`intVal`, `"`}                                                                           |
+| M'           | {`!`, `ε`}                           | {`)`, `$`}                                                                                |
+| N            | {`!`, `ε`}                           | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| N'           | {`item`, `character`}                | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| O            | {`item`}                             | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| P            | {`character`}                        | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| Neg          | {`!`, `ε`}                           | {`item`, `character`}                                                                     |
+| Int          | {`intVal`, `ε`}                      | {`intVal`, `"`, [`$`], `item`, `character`, `;`, `!`, `)`, `$`}                           |
+| Str          | {`"`}                                | {`(`, `->`, `;`, `$`}                                                                     |
+| Str'         | {`charVal`, `ε`}                     | {`"`, `$`}                                                                                |
+| Var          | {`$`}                                | {`health`, `inventory`, `team`, `item`, `character`, `intVal`, `!`, `)`, `:`, `;`, `$`}   |
+| Var'         | {`charVal`, `ε`}                     | {`health`, `inventory`, `team`, `item`, `character`, `intVal`, `!`, `)`, `:`, `;`, `$`}   |
 
 #### State machine diagram
 

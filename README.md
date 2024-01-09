@@ -264,15 +264,15 @@ The syntax tree of the grammar is the following :
 |--------------|-------------------------|
 | 101          | A string                |
 | 102          | A keyword               |
-| 103          | An integer              |
-| 104          | An arrow                |
-| 105          | A semicolon             |
-| 106          | An oppening parenthesis |
-| 107          | A closing parenthesis   |
-| 108          | A plus sign             |
-| 109          | A minus sign            |
-| 110          | A colon                 |
-| 111          | A variable              |
+| 103          | A variable              |
+| 104          | An integer              |
+| 105          | An arrow                |
+| 106          | A minus sign            |
+| 107          | A semi colon            |
+| 108          | A colon                 |
+| 109          | An opening parenthesis  |
+| 110          | A closing parenthesis   |
+| 111          | A plus sign             |
 | 112          | An exclamation mark     |
 
 #### Translation table

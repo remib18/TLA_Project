@@ -60,14 +60,6 @@ public class Adventure {
     }
 
     /**
-     * Get the locations of the adventure
-     * @return The locations of the adventure
-     */
-    public List<Location> locationsToList() {
-        return new ArrayList<>(locations.values());
-    }
-
-    /**
      * Get a location by its id
      * @param id - The id of the location
      * @return The location
@@ -76,15 +68,12 @@ public class Adventure {
         return locations.get(id);
     }
 
-    public Map<Integer, Location> getLocations() {
-        return locations;
-    }
-
     /**
-     * Add a location to the adventure
-     * @param location - The location to add
+     * Get the available propositions for a location. A proposition is available if all its conditions are met.
+     * @param locationId - The id of the location
+     * @return The available propositions for the location
      */
-    public void addLocation(Location location) {
-        locations.put(location.id(), location);
+    public List<Proposition> getAvailablePropositions(int locationId) {
+        return getLocation(locationId).propositions();
     }
 }

@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 /*
  * Classe principale.
@@ -113,8 +114,9 @@ public class App implements ActionListener {
         btns.clear();
         display(currentLocation.description());
         frame.pack();
-        for(int i = 0; i< currentLocation.propositions().size(); i++) {
-            JButton btn = new JButton(STR."<html><p>\{currentLocation.propositions().get(i).text()}</p></html>");
+        List<Proposition> propositionList = adventure.getAvailablePropositions(currentLocation.id());
+        for(int i = 0; i< propositionList.size(); i++) {
+            JButton btn = new JButton(STR."<html><p>\{propositionList.get(i).text()}</p></html>");
             btn.setActionCommand(String.valueOf(i));
             btn.addActionListener(this);
             mainPanel.add(btn, new GridBagConstraints() {{
@@ -136,7 +138,7 @@ public class App implements ActionListener {
         int index = Integer.parseInt(event.getActionCommand());
 
         // Retrouve la proposition
-        Proposition proposition = currentLocation.propositions().get(index);
+        Proposition proposition = adventure.getAvailablePropositions(currentLocation.id()).get(index);
 
         // Recherche le lieu désigné par la proposition
         Location location = adventure.getLocation(proposition.locationNumber());

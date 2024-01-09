@@ -101,8 +101,11 @@ public class Adventure {
         List<Proposition> propositionList = currentLocation.propositions();
         List<Proposition> availablePropositions = new ArrayList<>();
 
-        // TODO: apply filters
-        availablePropositions.addAll(propositionList);
+        for (var proposition : propositionList) {
+            if (Condition.execute(proposition.conditions(), state.getValue())) {
+                availablePropositions.add(proposition);
+            }
+        }
 
         if (availablePropositions.isEmpty() && !state.getValue().isGameWon() && !state.getValue().isGameOver()) {
             state.update(new State(

@@ -38,14 +38,14 @@ public class Interpreter {
                 case ADD_LOCATION -> {
                     int id = (int) child.getArg1();
                     String description = (String) child.getArg2();
-                    Location location = new Location(id, description, getPropositions(child));
+                    Location location = new Location(id, description, getPropositions(child), new ArrayList<>());
                     locations.put((Integer) child.getArg1(), location);
                 }
                 case STATEMENT -> throw new RuntimeException("Statement node should not be here");
                 case OPTION_DEFINITION -> throw new RuntimeException("Option definition node should not be here");
             }
         }
-        return new Adventure(title, locations);
+        return new Adventure(title, new HashMap<>(), new HashMap<>(), locations, 5, new HashMap<>());
     }
 
     private static List<Proposition> getPropositions(Node node) {
@@ -56,7 +56,7 @@ public class Interpreter {
         for (int i = 0; i < node.getNumberOfChild(); i++) {
             Node child = node.getChildAt(i);
             if (child.getType() == NodeType.OPTION_DEFINITION) {
-                Proposition proposition = new Proposition((String) child.getArg2(), (Integer) child.getArg1());
+                Proposition proposition = new Proposition(new ArrayList<>(), (String) child.getArg2(), (Integer) child.getArg1(), new ArrayList<>());
                 propositions.add(proposition);
             }
         }

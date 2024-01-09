@@ -37,7 +37,8 @@ public class App implements ActionListener {
      */
     final int linesNumber = 20;
 
-    Map<Integer, Location> locations;
+    Adventure adventure;
+
     Location currentLocation;
 
     JFrame frame;
@@ -62,16 +63,11 @@ public class App implements ActionListener {
 
         String file = "adventures/"+AdventureAnalyzer.getFile();
         System.out.println(file);
-        Adventure adventure;
         try {
             adventure = Interpreter.interpret(file);
         } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException | IllegalCaracterException e) {
             throw new RuntimeException(e);
         }
-
-
-        // Charge le contenu de l'aventure
-        locations = adventure.locations();
 
         // Prépare l'IHM
         textPane = new JTextPane();
@@ -82,7 +78,7 @@ public class App implements ActionListener {
 
         btns = new ArrayList<>();
 
-        frame = new JFrame(adventure.title());
+        frame = new JFrame(adventure.getTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
@@ -99,7 +95,7 @@ public class App implements ActionListener {
         }});
 
         // Démarre l'aventure au lieu n° 1
-        currentLocation = locations.get(1);
+        currentLocation = adventure.getLocation(1);
         initLocations();
 
         frame.pack();
@@ -143,7 +139,7 @@ public class App implements ActionListener {
         Proposition proposition = currentLocation.propositions().get(index);
 
         // Recherche le lieu désigné par la proposition
-        Location location = locations.get(proposition.locationNumber());
+        Location location = adventure.getLocation(proposition.locationNumber());
         if (location != null) {
 
             // Affiche la proposition qui vient d'être choisie par le joueur

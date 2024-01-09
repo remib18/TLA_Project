@@ -1,21 +1,52 @@
 package App.adventure;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents an adventure
- * @param title - The title of the adventure
- * @param locations - The locations of the adventure
  */
-public record Adventure(String title, Map<Integer, Location> locations) {
+public class Adventure {
+    private final String title;
+    private final Map<String, Character> characters;
+    private final Map<String, Item> items;
+    private final Map<Integer, Location> locations;
 
-    public Adventure {
+    private int currentHealth;
+
+    private Map<Item, Integer> inventory = new HashMap<>();
+
+    private List<Character> followingCharacters = new ArrayList<>();
+
+    public Adventure(String title, Map<String, Character> characters, Map<String, Item> items, Map<Integer, Location> locations, int initialHealth, Map<String, Integer> initialItems) {
+        this.title = title;
+        this.characters = characters;
+        this.items = items;
+        this.locations = locations;
+
+        this.currentHealth = initialHealth;
+
+        for (var entry : initialItems.entrySet()) {
+            inventory.put(items.get(entry.getKey()), entry.getValue());
+        }
+
         // check all locations ids in hash correspond to their key
         for (var location : locations.values()) {
             if (!Objects.equals(location.id(), locations.get(location.id()).id())) {
                 throw new IllegalArgumentException("Location id does not correspond to its key in hash");
+            }
+        }
+
+        // check all items names in hash correspond to their key
+        for (var item : items.values()) {
+            if (!Objects.equals(item.name(), items.get(item.name()).name())) {
+                throw new IllegalArgumentException("Item name does not correspond to its key in hash");
+            }
+        }
+
+        // check all characters names in hash correspond to their key
+        for (var character : characters.values()) {
+            if (!Objects.equals(character.getName(), characters.get(character.getName()).getName())) {
+                throw new IllegalArgumentException("Character name does not correspond to its key in hash");
             }
         }
     }
@@ -24,8 +55,7 @@ public record Adventure(String title, Map<Integer, Location> locations) {
      * Get the title of the adventure
      * @return The title of the adventure
      */
-    @Override
-    public String title() {
+    public String getTitle() {
         return title;
     }
 
@@ -34,7 +64,7 @@ public record Adventure(String title, Map<Integer, Location> locations) {
      * @return The locations of the adventure
      */
     public List<Location> locationsToList() {
-        return locations.values().stream().toList();
+        return new ArrayList<>(locations.values());
     }
 
     /**
@@ -44,6 +74,10 @@ public record Adventure(String title, Map<Integer, Location> locations) {
      */
     public Location getLocation(int id) {
         return locations.get(id);
+    }
+
+    public Map<Integer, Location> getLocations() {
+        return locations;
     }
 
     /**

@@ -25,30 +25,56 @@ public class Interpreter {
      */
     public static Adventure interpret(String fileName) throws LexicalErrorException, UnexpectedTokenException, IncompleteParsingException, IllegalCaracterException {
         String content = getFileContent(fileName);
-        HashMap<Integer, Location> locations = new HashMap<>();
-        String title = null;
         List<Token<?>> tokens = LexicalAnalysis.run(content);
         Node root = TreeBuilder.build(tokens);
+
+        String title = null;
+        HashMap<String, Character> characters = new HashMap<>();
+        HashMap<String, Item> items = new HashMap<>();
+        HashMap<Integer, Location> locations = new HashMap<>();
+        Integer health = null;
+        HashMap<String, Integer> inventory = new HashMap<>();
 
         for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
             Node child = root.getChildAt(rootChildIndex);
             switch (child.getType()) {
                 case SET_TITLE -> title = getTitle(child);
+                case SET_HEALTH -> health = getHealth(child);
+                case ADD_CHARACTER -> {
+                    Character character = buildCharacter(child);
+                    if (!characters.containsKey(character.getName())) {
+                        throw new RuntimeException(STR."Character \"\{character.getName()}\" has already been defined.");
+                    }
+                    characters.put(character.getName(), character);
+                }
+                case ADD_ITEM -> {
+                    Item item = buildItem(child);
+                    items.put(item.name(), item);
+                }
+                case SET_INVENTORY -> inventory = getInventory(child, items);
                 case ADD_LOCATION -> {
                     Location location = buildLocation(child);
                     locations.put(location.id(), location);
                 }
-                case STATEMENT -> throw new RuntimeException("Statement node should not be here");
-                case OPTION_DEFINITION -> throw new RuntimeException("Option definition node should not be here");
+                default -> throw new RuntimeException(STR."Unexpected node type: \"\{child.getType()}\" in the root node.");
             }
         }
-        return new Adventure(title, new HashMap<>(), new HashMap<>(), locations, 5, new HashMap<>());
+
+        if (Objects.isNull(title)) {
+            throw new RuntimeException("Title is not defined.");
+        }
+
+        if (Objects.isNull(health)) {
+            throw new RuntimeException("Health is not defined.");
+        }
+
+        return new Adventure(title, characters, items, locations, health, inventory);
     }
 
     /**
-     * Retourne le titre d'un nœud de type SET_TITLE
-     * @param node - Le nœud
-     * @return Le titre
+     * Return the title of the adventure
+     * @param node - The node (of type SET_TITLE)
+     * @return The title
      */
     private static String getTitle(Node node) {
         checkNodeType(node, NodeType.SET_TITLE);
@@ -58,31 +84,90 @@ public class Interpreter {
     }
 
     /**
-     * Construit un personnage à partir d'un nœud de type ADD_CHARACTER
-     * @param node - Le nœud
-     * @return Le personnage
+     * Return the initial health of the player
+     * @param node - The node (of type SET_HEALTH)
+     * @return The initial health
+     */
+    private static Integer getHealth(Node node) {
+        checkNodeType(node, NodeType.SET_HEALTH);
+        var child = node.getChildAt(0);
+        checkNodeType(child, NodeType.INT);
+        return (Integer) child.getValue();
+    }
+
+    /**
+     * Build and return the initial inventory
+     * @param node - The node (of type SET_INVENTORY)
+     * @param items - The items of the adventure
+     * @return The initial inventory
+     */
+    private static HashMap<String, Integer> getInventory(Node node, HashMap<String, Item> items) {
+        checkNodeType(node, NodeType.SET_INVENTORY);
+        HashMap<String, Integer> inventory = new HashMap<>();
+
+        for (Node child : node.getChildren()) {
+            checkNodeType(child, NodeType.SET_INVENTORY_SLOT);
+            Node itemNameNode = child.getChildAt(0);
+            Node quantityNode = child.getChildAt(1);
+
+            checkNodeType(itemNameNode, NodeType.VAR);
+            checkNodeType(quantityNode, NodeType.INT);
+
+            String itemName = (String) itemNameNode.getValue();
+            Integer quantity = (Integer) quantityNode.getValue();
+
+            if (!items.containsKey(itemName)) {
+                throw new RuntimeException(STR."Item \"\{itemName}\" does not exist. Please add it before adding it to the inventory.");
+            }
+
+            inventory.put(itemName, quantity);
+        }
+
+        return inventory;
+    }
+
+    /**
+     * Build and return a character
+     * @param node - The node (of type ADD_CHARACTER)
+     * @return The character
      */
     private static Character buildCharacter(Node node) {
         checkNodeType(node, NodeType.ADD_CHARACTER);
-        // TODO: Implement @Rémi
-        return null;
+
+        Node nameNode = node.getChildAt(0);
+        Node initialLocationIdNode = node.getChildAt(1);
+        Node healthNode = node.getChildAt(2);
+
+        checkNodeType(nameNode, NodeType.VAR);
+        checkNodeType(initialLocationIdNode, NodeType.INT);
+        checkNodeType(healthNode, NodeType.INT);
+
+        String name = (String) nameNode.getValue();
+        Integer initialLocationId = (Integer) initialLocationIdNode.getValue();
+        Integer health = (Integer) healthNode.getValue();
+
+        return new Character(name, initialLocationId, health);
     }
 
     /**
-     * Construit un objet à partir d'un nœud de type ADD_ITEM
-     * @param node - Le nœud
-     * @return L'objet
+     * Build and return an item
+     * @param node - The node (of type ADD_ITEM)
+     * @return The item
      */
     private static Item buildItem(Node node) {
         checkNodeType(node, NodeType.ADD_ITEM);
-        // TODO: Implement @Rémi
-        return null;
+
+        Node itemNameNode = node.getChildAt(0);
+        checkNodeType(itemNameNode, NodeType.VAR);
+        String itemName = (String) itemNameNode.getValue();
+
+        return new Item(itemName);
     }
 
     /**
-     * Construit un emplacement à partir d'un nœud de type ADD_LOCATION
-     * @param node - Le nœud
-     * @return L'emplacement
+     * Build and return a location
+     * @param node - The node (of type ADD_LOCATION)
+     * @return The location
      */
     private static Location buildLocation(Node node) {
         checkNodeType(node, NodeType.ADD_LOCATION);
@@ -109,9 +194,9 @@ public class Interpreter {
     }
 
     /**
-     * Construit les propositions à partir d'une liste de nœuds de type OPTION_DEFINITION
-     * @param nodes - La liste de nœuds
-     * @return La liste des propositions
+     * Build and return the propositions of a location
+     * @param nodes - The nodes (of type OPTION_DEFINITION)
+     * @return The propositions
      */
     private static List<Proposition> getPropositions(List<Node> nodes) {
         List<Proposition> propositions = new ArrayList<>();
@@ -128,25 +213,84 @@ public class Interpreter {
     }
 
     /**
-     * Construit les conditions à partir d'un nœud de type SET_CONDITIONS
-     * @param node - Le nœud
-     * @return La liste des conditions
+     * Build and return the conditions of a proposition
+     * @param node - The node (of type SET_CONDITIONS)
+     * @return The conditions
      */
     private static List<Condition> getConditions(Node node) {
         checkNodeType(node, NodeType.SET_CONDITIONS);
-        // TODO: Implement @Benoit
-        return new ArrayList<>();
+        ArrayList<Condition> conditions = new ArrayList<>();
+
+        for (Node child : node.getChildren()) {
+            checkNodeType(child, NodeType.SET_CONDITION);
+
+            Node conditionKindNode = child.getChildAt(0);
+            Node objectNameNode = child.getChildAt(1);
+            Node valueNode = child.getChildAt(2);
+
+            checkNodeType(conditionKindNode, NodeType.SET_CONDITION_KIND);
+            String conditionKindStr = (String) conditionKindNode.getValue();
+            ConditionKind conditionKind = ConditionKind.fromString(conditionKindStr);
+
+            checkNodeType(objectNameNode, NodeType.VAR);
+            String conditionName = (String) objectNameNode.getValue();
+
+            Condition condition = switch (conditionKind) {
+                case ITEM -> {
+                    checkNodeType(valueNode, NodeType.INT);
+                    Integer quantity = (Integer) valueNode.getValue();
+                    yield new Condition(conditionKind, conditionName, quantity);
+                }
+                case CHARACTER -> new Condition(conditionKind, conditionName);
+            };
+
+            conditions.add(condition);
+        }
+
+        return conditions;
     }
 
     /**
-     * Construit les événements à partir d'un nœud de type SET_ACTIONS
-     * @param node - Le nœud
-     * @return La liste des événements
+     * Build and return the events of a proposition or a location
+     * @param node - The node (of type SET_ACTIONS)
+     * @return The events
      */
     private static List<Event> getEvents(Node node) {
         checkNodeType(node, NodeType.SET_ACTIONS);
-        // TODO: Implement @Pierre-Alexis
-        return new ArrayList<>();
+        ArrayList<Event> events = new ArrayList<>();
+
+        for (Node child : node.getChildren()) {
+            checkNodeType(child, NodeType.SET_ACTION);
+
+            Node actionKindNode = child.getChildAt(0);
+            Node operationTypeNode = child.getChildAt(1);
+            Node valueNode = child.getChildAt(2);
+
+            checkNodeType(actionKindNode, NodeType.SET_ACTION_KIND);
+            String actionKindStr = (String) actionKindNode.getValue();
+            EventKind actionKind = EventKind.fromString(actionKindStr);
+
+            checkNodeType(operationTypeNode, NodeType.SET_ACTION_OP);
+            String operationTypeStr = (String) operationTypeNode.getValue();
+            EventOperationType operationType = EventOperationType.fromString(operationTypeStr);
+
+            Event event = switch (actionKind) {
+                case HEALTH -> {
+                    checkNodeType(valueNode, NodeType.INT);
+                    Integer quantity = (Integer) valueNode.getValue();
+                    yield new Event(actionKind, operationType, (int) quantity);
+                }
+                case INVENTORY, FOLLOWING_CHARACTERS -> {
+                    checkNodeType(valueNode, NodeType.VAR);
+                    String identifier = (String) valueNode.getValue();
+                    yield new Event(actionKind, operationType, identifier);
+                }
+            };
+
+            events.add(event);
+        }
+
+        return events;
     }
 
     /**
@@ -166,33 +310,17 @@ public class Interpreter {
     }
 
     /**
-     * Vérifie que le nœud est du bon type
-     * @param node - Le nœud
-     * @param type - Le type attendu
-     * @param type2 - Le type attendu
-     */
-    private static void checkNodeType(Node node, NodeType type, NodeType type2) throws RuntimeException {
-        boolean ok = true;
-        if (Objects.nonNull(type) && node.getType() != type) {
-            ok = false;
-        }
-        if (Objects.nonNull(type2) && node.getType() != type2) {
-            ok = false;
-        }
-        if (!ok) {
-            String typeStr = Objects.isNull(type) ? "" : type.toString();
-            String type2Str = Objects.isNull(type2) ? "" : type2.toString();
-            String types = typeStr + (typeStr.isEmpty() || type2Str.isEmpty() ? "" : " or ") + type2Str;
-            throw new RuntimeException(STR."Node is not of type \{types}.");
-        }
-    }
-
-    /**
-     * Vérifie que le nœud est du bon type
-     * @param node - Le nœud
-     * @param type - Le type attendu
+     * Check that the node is of the given type and is not null
+     * @param node - The node
+     * @param type - The type
+     * @throws RuntimeException if the node is null or is not of the given type
      */
     private static void checkNodeType(Node node, NodeType type) throws RuntimeException {
-       checkNodeType(node, type, null);
+        if (Objects.isNull(node)) {
+            throw new RuntimeException(STR."Node is null. Expected type: \"\{type.toString()}\".");
+        }
+        if (node.getType() != type) {
+            throw new RuntimeException(STR."Node is not of type \"\{type.toString()}\". Got \"\{node.getType().toString()}\" instead.");
+        }
     }
 }

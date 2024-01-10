@@ -49,7 +49,10 @@ public class Node {
      * @return The child at the given index
      */
     public Node getChildAt(int i) {
-        return this.child.get(i);
+        if (i < 0 || i >= child.size()) {
+            return null;
+        }
+        return child.get(i);
     }
 
     /**

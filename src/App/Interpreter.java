@@ -1,8 +1,7 @@
 package App;
 
-import App.adventure.Adventure;
-import App.adventure.Location;
-import App.adventure.Proposition;
+import App.adventure.*;
+import App.adventure.Character;
 import App.exceptions.IllegalCaracterException;
 import App.exceptions.IncompleteParsingException;
 import App.exceptions.LexicalErrorException;
@@ -64,6 +63,61 @@ public class Interpreter {
     }
 
     /**
+     * Récupère les conditions d'un nœud de type OPTION_DEFINITION
+     * @param node - Le nœud
+     * @return La liste des conditions
+     */
+    private static List<Condition> getConditions(Node node) {
+        checkNodeType(node, NodeType.OPTION_DEFINITION);
+        // TODO: Implement @Benoit
+        return new ArrayList<>();
+    }
+
+    /**
+     * Récupère les événements d'un nœud de type OPTION_DEFINITION ou ADD_LOCATION
+     * @param node - Le nœud
+     * @return La liste des événements
+     */
+    private static List<Event> getEvents(Node node) {
+        checkNodeType(node, NodeType.OPTION_DEFINITION, NodeType.ADD_LOCATION);
+        // TODO: Implement @Pierre-Alexis
+        return new ArrayList<>();
+    }
+
+    /**
+     * Construit un emplacement à partir d'un nœud de type ADD_LOCATION
+     * @param node - Le nœud
+     * @return L'emplacement
+     */
+    private static Location buildLocation(Node node) {
+        checkNodeType(node, NodeType.ADD_LOCATION);
+        // TODO: Implement @Rémi
+        return null;
+    }
+
+    /**
+     * Construit un personnage à partir d'un nœud de type ADD_CHARACTER
+     * @param node - Le nœud
+     * @return Le personnage
+     */
+    private static Character buildCharacter(Node node) {
+        checkNodeType(node, NodeType.ADD_CHARACTER);
+        // TODO: Implement @Rémi
+        return null;
+    }
+
+    /**
+     * Construit un objet à partir d'un nœud de type ADD_ITEM
+     * @param node - Le nœud
+     * @return L'objet
+     */
+    private static Item buildItem(Node node) {
+        checkNodeType(node, NodeType.ADD_ITEM);
+        // TODO: Implement @Rémi
+        return null;
+    }
+
+    /**
      * Reads the content of a file
      * @param fileName - The name of the file to read
      * @return The content of the file
@@ -77,5 +131,36 @@ public class Interpreter {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Vérifie que le nœud est du bon type
+     * @param node - Le nœud
+     * @param type - Le type attendu
+     * @param type2 - Le type attendu
+     */
+    private static void checkNodeType(Node node, NodeType type, NodeType type2) throws RuntimeException {
+        boolean ok = true;
+        if (Objects.nonNull(type) && node.getType() != type) {
+            ok = false;
+        }
+        if (Objects.nonNull(type2) && node.getType() != type2) {
+            ok = false;
+        }
+        if (!ok) {
+            String typeStr = Objects.isNull(type) ? "" : type.toString();
+            String type2Str = Objects.isNull(type2) ? "" : type2.toString();
+            String types = typeStr + (typeStr.isEmpty() || type2Str.isEmpty() ? "" : " or ") + type2Str;
+            throw new RuntimeException(STR."Node is not of type \{types}.");
+        }
+    }
+
+    /**
+     * Vérifie que le nœud est du bon type
+     * @param node - Le nœud
+     * @param type - Le type attendu
+     */
+    private static void checkNodeType(Node node, NodeType type) throws RuntimeException {
+       checkNodeType(node, type, null);
     }
 }

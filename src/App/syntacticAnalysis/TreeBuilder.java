@@ -289,9 +289,9 @@ public class TreeBuilder {
         Node description = new Node(NodeType.STR, t.value());
 
         Node node = new Node(NodeType.OPTION_DEFINITION);
+        node.addChild(conditions);
         node.addChild(id);
         node.addChild(description);
-        node.addChild(conditions);
 
         //Get the action(s)
         Node i = I();
@@ -454,12 +454,9 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node N() throws UnexpectedTokenException {
-        Node node = new Node(NodeType.SET_CONDITION);
-        Node neg = Neg();
-        if (!Objects.isNull(neg)){
-            node.addChild(neg);
-        }
-        Node next = Np();
+        Node node = new Node(NodeType.SET_CONDITION, Neg());
+
+        List<Node> next = Np();
         if (!Objects.isNull(next)){
             node.addChild(next);
         }
@@ -470,8 +467,8 @@ public class TreeBuilder {
      * Np -> `O | P`
      * @return The node built
      */
-    private Node Np() throws UnexpectedTokenException {
-        Node node = O();
+    private List<Node> Np() throws UnexpectedTokenException {
+        List<Node> node = O();
         if (!Objects.isNull(node)) {
             return node;
         }
@@ -486,9 +483,13 @@ public class TreeBuilder {
      * O -> `item:Var:Int`
      * @return The node built
      */
-    private Node O() throws UnexpectedTokenException {
+    private List<Node> O() throws UnexpectedTokenException {
         // Get the "item"
-        checkTokenAndReturn(Tokens.item);
+        Tokens type = readTokenType();
+        if(type != Tokens.item) {
+            cursor--;
+            return null;
+        }
         // Check the colon
         checkTokenAndReturn(Tokens.colon);
         // Get the var name
@@ -500,30 +501,38 @@ public class TreeBuilder {
         t = checkTokenAndReturn(Tokens.intValue);
         Node qt = new Node(NodeType.INT, t.value());
 
-        Node node = new Node(NodeType.SET_CONDITION_BODY, "item");
-        node.addChild(variable);
-        node.addChild(qt);
+        List<Node> res = new ArrayList<>();
+        res.add(new Node(NodeType.SET_CONDITION_KIND, "item"));
+        res.add(variable);
+        res.add(qt);
 
-        return node;
+        return res;
     }
 
     /**
      * P -> `character:Var`
      * @return The node built
      */
-    private Node P() throws UnexpectedTokenException {
-        // Get the "item"
-        checkTokenAndReturn(Tokens.character);
+    private List<Node> P() throws UnexpectedTokenException {
+        // Get the "character"
+        Tokens type = readTokenType();
+        if(type != Tokens.character) {
+            cursor--;
+            return null;
+        }
         // Check the colon
         checkTokenAndReturn(Tokens.colon);
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
         Node qt = new Node(NodeType.INT, 1);
-        Node node = new Node(NodeType.SET_CONDITION, "character");
-        node.addChild(variable);
-        node.addChild(qt);
-        return node;
+
+        List<Node> res = new ArrayList<>();
+        res.add(new Node(NodeType.SET_CONDITION_KIND, "character"));
+        res.add(variable);
+        res.add(qt);
+
+        return res;
     }
 
     /**
@@ -531,14 +540,14 @@ public class TreeBuilder {
      *
      * @return The node built
      */
-    private Node Neg() throws UnexpectedTokenException {
+    private Boolean Neg() throws UnexpectedTokenException {
         checkTokenAndReturn(Tokens.exclamationPoint);
         Tokens t = this.readTokenType();
         if(t != Tokens.exclamationPoint){
             cursor--;
-            return null;
+            return true;
         }
-        return new Node(NodeType.SET_CONDITION_NEG);
+        return false;
 
     }
 

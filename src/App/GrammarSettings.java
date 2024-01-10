@@ -68,13 +68,13 @@ public class GrammarSettings {
             case '$' -> 11;
             default   -> {
                 if (Character.isDigit(c)) {
-                    yield 6;
+                    yield 12;
                 }
                 if (Character.isWhitespace(c)) {
                     yield 0;
                 }
                 else {
-                    yield 7;
+                    yield 13;
                 }
             }
         };

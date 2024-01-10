@@ -7,37 +7,16 @@ import java.util.Objects;
 public class Node {
     private final List<Node> child = new ArrayList<>();
     private final NodeType type;
-    private Object arg1;
-    private Object arg2;
-    private Object arg3;
+    private Object value;
 
     /**
      * Create a node with a value
      * @param nodeType The type of the node
-     * @param arg1 The value of the first argument of the node
+     * @param value The value of the node
      */
-    public Node(NodeType nodeType, Object arg1) {
+    public Node(NodeType nodeType, Object value) {
         this.type = nodeType;
-        this.arg1 = arg1;
-    }
-
-    /**
-     * Create a node with a value
-     * @param nodeType The type of the node
-     * @param arg1 The value of the first argument of the node
-     * @param arg2 The value of the second argument of the node
-     */
-    public Node(NodeType nodeType, Object arg1, Object arg2) {
-        this.type = nodeType;
-        this.arg1 = arg1;
-        this.arg2 = arg2;
-    }
-
-    public Node(NodeType nodeType, Object arg1, Object arg2, Object arg3) {
-        this.type = nodeType;
-        this.arg1 = arg1;
-        this.arg2 = arg2;
-        this.arg3 = arg3;
+        this.value = value;
     }
 
     /**
@@ -90,27 +69,11 @@ public class Node {
     }
 
     /**
-     * Get the first argument of the node
+     * Get the value of the node
      * @return The value of the node
      */
-    public Object getArg1() {
-        return arg1;
-    }
-
-    /**
-     * Get the second argument of the node
-     * @return The value of the node
-     */
-    public Object getArg2() {
-        return arg2;
-    }
-
-    /**
-     * Get the third argument of the node
-     * @return The value of the node
-     */
-    public Object getArg3() {
-        return arg3;
+    public Object getValue() {
+        return value;
     }
 
     /**
@@ -119,9 +82,8 @@ public class Node {
      */
     public String toString() {
         String type = Objects.isNull(this.type) ? "" : this.type.toString();
-        String arg1Str = Objects.isNull(arg1) ? "" : STR.", \{arg1}";
-        String arg2Str = Objects.isNull(arg2) ? "" : STR.", \{arg2}";
-        return STR."<\{type}\{arg1Str}\{arg2Str}>";
+        String valueStr = Objects.isNull(value) ? "" : STR.", \{value}";
+        return STR."<\{type}\{valueStr}>";
     }
 
     /**

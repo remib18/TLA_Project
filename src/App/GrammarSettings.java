@@ -35,8 +35,8 @@ public class GrammarSettings {
             // 102 acceptation d'un charVal (retourArriere)
             // 103 acceptation d'une variable $ (retourArriere)
             // 104 acceptation d'un intVal (retourArriere)
-            // 105 acceptation d'un -> (retourArriere)
-            // 106 acceptation d'un -
+            // 105 acceptation d'un -> 
+            // 106 acceptation d'un - (retourArriere)
             // 107 acceptation d'un ;
             // 108 acceptation d'un :
             // 109 acceptation d'un (

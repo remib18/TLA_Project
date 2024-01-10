@@ -97,19 +97,21 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> B() throws UnexpectedTokenException {
-        if (isEndOfInput()) {
-            return null;
+        Tokens type = readTokenType();
+        cursor--;
+        if (isEndOfInput() || (type != Tokens.addItem && type != Tokens.addCharacter)) {
+            return new ArrayList<>();
         }
         List<Node> res = new ArrayList<>();
 
         Node next = F();
         if (!Objects.isNull(next)) {
             res.add(next);
-        } else {
-            next = E();
-            if (!Objects.isNull(next)) {
-                res.add(next);
-            }
+        }
+        next = E();
+        if (!Objects.isNull(next)) {
+            res.add(next);
+
         }
 
         List<Node> prev = B();
@@ -125,7 +127,11 @@ public class TreeBuilder {
      */
     private Node E() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.addItem);
+        Tokens type = readTokenType();
+        if(type != Tokens.addItem){
+            cursor--;
+            return null;
+        }
 
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
@@ -146,7 +152,11 @@ public class TreeBuilder {
      */
     private Node F() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.addCharacter);
+        Tokens type = readTokenType();
+        if(type != Tokens.addCharacter){
+            cursor--;
+            return null;
+        }
 
         // Get the Var name
         Token<?> t = checkTokenAndReturn(Tokens.varValue);
@@ -216,7 +226,7 @@ public class TreeBuilder {
      */
     private List<Node> D() throws UnexpectedTokenException {
         if (isEndOfInput()) {
-            return null;
+            return new ArrayList<>();
         }
         List<Node> res = new ArrayList<>();
         Node next = G();
@@ -314,8 +324,8 @@ public class TreeBuilder {
      */
     private Node I() throws UnexpectedTokenException {
         // Check the token
-        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.openParenthesis);
-        if (t.type() == Tokens.arrow) {
+        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.openParenthesis, Tokens.instructionEnd);
+        if (t.type() == Tokens.arrow || t.type() == Tokens.instructionEnd) {
             cursor--;
             return null;
         }

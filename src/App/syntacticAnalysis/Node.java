@@ -32,6 +32,9 @@ public class Node {
      * @param n The child to add
      */
     public void addChild(Node n) {
+        if(Objects.isNull(n)){
+            return;
+        }
         child.add(n);
     }
 

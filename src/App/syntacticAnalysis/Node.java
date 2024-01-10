@@ -10,6 +10,7 @@ public class Node {
     private Object arg1;
     private Object arg2;
     private Object arg3;
+    private Object arg4;
 
     /**
      * Create a node with a value
@@ -33,11 +34,34 @@ public class Node {
         this.arg2 = arg2;
     }
 
+    /**
+     * Create a node with a value
+     * @param nodeType The type of the node
+     * @param arg1 The value of the first argument of the node
+     * @param arg2 The value of the second argument of the node
+     * @param arg3 The value of the third argument of the node
+     */
     public Node(NodeType nodeType, Object arg1, Object arg2, Object arg3) {
         this.type = nodeType;
         this.arg1 = arg1;
         this.arg2 = arg2;
         this.arg3 = arg3;
+    }
+
+    /**
+     * Create a node with a value
+     * @param nodeType The type of the node
+     * @param arg1 The value of the first argument of the node
+     * @param arg2 The value of the second argument of the node
+     * @param arg3 The value of the third argument of the node
+     * @param arg4 The value of the fourth argument of the node
+     */
+    public Node(NodeType nodeType, Object arg1, Object arg2, Object arg3, Object arg4) {
+        this.type = nodeType;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+        this.arg3 = arg3;
+        this.arg4 = arg4;
     }
 
     /**
@@ -111,6 +135,14 @@ public class Node {
      */
     public Object getArg3() {
         return arg3;
+    }
+
+    /**
+     * Get the fourth argument of the node
+     * @return The value of the node
+     */
+    public Object getArg4() {
+        return arg4;
     }
 
     /**

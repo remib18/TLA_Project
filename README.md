@@ -19,7 +19,7 @@ You can either download the project as a zip file or clone it using git.
 
 ### Syntax
 
-The language is composed of 3 main parts : the title, the locations and the actions.
+The language is composed of 5 main parts : the title, the items, the characters the locations and the actions.
 
 #### General syntax
 
@@ -30,8 +30,18 @@ Each instruction end with a semicolon `;`. The language is case sensitive. The l
 - Standard escape characters are supported within strings, using the backslash (`\`) for escaping.
 - The language does not support comments.
 - Whitespace (new lines, tabs, spaces) can be used freely for readability.
+- Character and items names must be prefixed with a dollar (`$`)
 
-#### The title
+#### Setup
+
+To create your adventure, their is a few things to take into account. Not following those will throw an error informing you of a malformed adventure.
+
+1. Your file *must* start with the title definition.
+2. Then, you *must* define the initial player health.
+3. Then, you *can* define some characters and items (but it is an optionnal step).
+4. Then, you *must* define the initial inventory of the player.
+
+##### Title definitial
 
 The title is the first line of the file. It is composed of the keyword `setTitle` followed by the title of the adventure.
 
@@ -41,26 +51,92 @@ Example :
 setTitle "My adventure";
 ```
 
+##### Defining the initial player's health
+
+The initial player's health is composed of the keyword `setHealth` followed by an integer value.
+
+Example :
+
+```
+setHealth 5;
+```
+
+
+##### Adding items and characters
+
+You can add as many items and characters as you want but they must be defined between the player's initial health and the player's initial inventory.
+
+To define an item, you need to specify the keyword `addCharacter` followed by its name, the integer identifying its original location (location id) and its life.
+
+Example :
+
+```
+addCharacter $John 1 5;  // Adds a character named John at the location 1 with a health of 5.
+```
+
+To define an item, you need to specify the keyword `addItem` followed by its name.
+
+Example :
+
+```
+addItem $sword;
+addItem $coin;
+```
+
+
+##### Defining the player's initial inventory
+
+The player's initial inventory can be defined by the keyword `setInventory` followed by some objects. Each object must be followed by a colon (`:`) and an integer quantity.
+
+Example :
+
+```
+setInventory $sword:1 $coin:10;
+```
+
 #### The locations
 
 The locations are the places where the player can go. They are composed of the keyword `addLocation` followed by the identifier of the location and the description of the location.
 
 Each location must have a unique identifier.
 
-One location can have one or more actions.
+One location can have none or more events and actions.
 
 Example :
 
 ```
-addLocation 1 "You are in a dark room" [actions];
-addLocation 2 "You are in a garden";
+addLocation 1 "You are in a dark room" [events] [actions];
+addLocation 2 "You are in a closed room with gas in it" [event];
+addLocation 3 "You are in a garden";
 ```
+
+#### The events
+
+An event is what happens when a player enter a location or performs an action. They are defined a group by operations sourounded by parenthesis. Each operation is separated with a space (` `).
+
+The operations are divided in three sections : the kind, the operator and the value.
+
+| kind      | operator                        | value          | example                                                                     |
+| --------- | ------------------------------- | -------------- | --------------------------------------------------------------------------- |
+| health    | `+` to add ; `-` to substract   | integer        | `health+3` to add 3 health points                                           |
+| inventory | `+` to give ; `-` to remove     | item name      | `inventory-$sword` to remove the sword from the inventory                   |
+| team      | `+` to follow ; `-` to unfollow | character name | `team+$John` to make John follow the player ; John can be a good or bad guy |
+
 
 #### The actions
 
-The actions are the actions that the player can do in a location. They are defined with `->` followed by the identifier of the place to go and the description of the action.
+The actions are the actions that the player can do in a location. They are defined with `->` followed by an optionnal condition, the identifier of the place to go and the description of the action.
 
 We do recommend to put the actions in a new line and add a tabulation before the action. It is not mandatory but it makes the code more readable.
+
+Here are the possible conditions :
+
+| kind      | value          | option                       | example                                                              |
+| --------- | -------------- | ---------------------------- | -------------------------------------------------------------------- |
+| item      | item name      | quantity (integer, required) | `item:$sword:1` requires 1 sword ; `item:$coin:10` requires 10 coins |
+| character | character name | none                         | `character:$John` requires John to follow the player                 |
+
+You can negate a condition with an exclamation mark `!` before the condition, you can add multiples conditions separated with a space (` `). In order to display the action, all statements must be true. The conditions are sounded with parenthesis.
 
 Example :
 
@@ -68,8 +144,9 @@ Example :
 addLocation 1 "You are in a dark room"
     -> 2 "Go to the garden"
     -> 3 "Go to the kitchen";
-addLocation 2 "You are in a garden"
-    -> 1 "Go to the dark room";
+addLocation 2 "You are in a garden with toxic plants" (health-2)
+    -> 1 "Go back to the dark room"
+    -> (item:$sword:1 character:$John) 2 "Attack the plants";
 addLocation 3 "You are in a kitchen"
     -> 1 "Go to the dark room";
 ```
@@ -78,27 +155,73 @@ addLocation 3 "You are in a kitchen"
 
 The grammar of the language is the following :
 
-- S -> `setTitle Str;A`
-- A -> `BA|ε`
-- B -> `addLocation Int Str C;`
-- C -> `-> Int Str C|ε`
-- Int -> `intVal Int|ε` with `intVal` being a digit between 0 and 9
-- Str -> `"Str'"`
-- Str' -> `charVal Str'|ε` with `charVal` being any character, including `intVal`
+- S -> `setTitle Str;ABCD` Allows setting the title and defines the sequence of non terminal symbols
+- A -> `setHealth Int;` Allows defining the initial health
 
-#### The first and follow sets
+- B -> `FB | EB | ε` Allows looping over the definition of characters or objects
+- E -> `addItem Var;` Allows creating an item
+- F -> `addCharacter Var Int Int;` Allows creating a character
+
+- C -> `setInventory C’;` Allows defining the initial inventory of the player
+- C’ -> `Var:Int C’ | ε`
+
+- D -> `GD | ε` Allows looping over the addition of locations
+- G -> `addLocation Int Str IH;` Allows adding a location
+- H -> `-> M Int Str IH | ε` Allows adding an option to a location
+
+- I -> `(J) | ε`  Définit une action
+- J -> `J’J | ε` Allows the possibility of multiple expressions in an action
+- J’ -> `K:LVar` Defines the structure of a condition (e.g., `health:+5`, `item:+$sword` ...)
+- K -> `health | inventory | team` Types of action
+- L -> `+ | -` Action operation (add / remove)
+
+- M -> `(M’) | ε` Defines a condition
+- M’ -> `NM’ | ε` Allows the possibility of multiple expressions in a condition
+- N -> `Neg N’`  Defines the structure of a condition
+- N’ -> `O | P` Allows two types of conditions: on objects or characters
+- O -> `item:Var:Int` Defines a condition on objects (e.g., `item:$sword:1`, `item:$coin:10` ...)
+- P -> `character:Var` Defines a condition on characters (eg: `character:$philip` ...)
+
+- Neg -> `! | ε` Defines a negation
+- Int -> `intVal Int | ε` Defines an integer
+- Str -> `"Str'"` Defines a string
+- Str' -> `charVal Str' | ε`
+- Var -> `$Var'` Defines a variable
+- Var' -> `charVal Var' | ε`
+
+#### The first and follow sets [PLUS A JOUR]
 
 The first and follow sets of the grammar are the following :
 
-| Non-terminal  | First set            | Follow set           |
-|---------------|----------------------|----------------------|
-| S             | {`setTitle`}         | {`$`}                |
-| A             | {`addLocation`, `ε`} | {`addLocation`, `$`} |
-| B             | {`addLocation`}      | {`addLocation`, `$`} |
-| C             | {`->`, `ε`}          | {`;`, `->`}          |
-| Int           | {`intVal`, `ε`}      | {`"`}                |
-| Str           | {`"`}                | {`;`, `->`}          |
-| Str'          | {`charVal`, `ε`}     | {`"`}                |
+| Non-terminal | First set                            | Follow set                                                                                |
+|--------------|--------------------------------------|-------------------------------------------------------------------------------------------|
+| S            | {`setTitle`}                         | {`$`}                                                                                     |
+| A            | {`setHealth`}                        | {`addItem`, `addCharacter`, `setInventory`}                                               |
+| B            | {`addCharacter`, `addItem`, `ε`}     | {`setInventory`, `$`}                                                                     |
+| E            | {`addItem`}                          | {`addItem`, `addCharacter`, `setInventory`, `$`}                                          |
+| F            | {`addCharacter`}                     | {`addItem`, `addCharacter`, `setInventory`, `$`}                                          |
+| C            | {`setInventory`}                     | {`addLocation`, `$`}                                                                      |
+| C'           | {`$`, `ε`}                           | {`;`, `$`}                                                                                |
+| D            | {`addLocation`, `ε`}                 | {`$`}                                                                                     |
+| G            | {`addLocation`}                      | {`addLocation`, `$`}                                                                      |
+| H            | {`->`, `ε`}                          | {`;`, `$`}                                                                                |
+| I            | {`(`, `ε`}                           | {`->`, `;`, `$`}                                                                          |
+| J            | {`health`, `inventory`, `team`, `ε`} | {`)`, `$`}                                                                                |
+| J'           | {`health`, `inventory`, `team`}      | {`health`, `inventory`, `team`, `)`, `$`}                                                 |
+| K            | {`health`, `inventory`, `team`}      | {`:`}                                                                                     |
+| L            | {`+`, `-`}                           | {[`$`]}                                                                                   |
+| M            | {`(`, `ε`}                           | {`intVal`, `"`}                                                                           |
+| M'           | {`!`, `ε`, `item`, `character`}      | {`)`, `$`}                                                                                |
+| N            | {`!`, `ε`, `item`, `character`}      | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| N'           | {`item`, `character`}                | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| O            | {`item`}                             | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| P            | {`character`}                        | {`item`, `character`, `!`, `)`, `$`}                                                      |
+| Neg          | {`!`, `ε`}                           | {`item`, `character`}                                                                     |
+| Int          | {`intVal`, `ε`}                      | {`intVal`, `"`, [`$`], `item`, `character`, `;`, `!`, `)`, `$`}                           |
+| Str          | {`"`}                                | {`(`, `->`, `;`, `$`}                                                                     |
+| Str'         | {`charVal`, `ε`}                     | {`"`, `$`}                                                                                |
+| Var          | {`$`}                                | {`health`, `inventory`, `team`, `item`, `character`, `intVal`, `!`, `)`, `:`, `;`, `$`}   |
+| Var'         | {`charVal`, `ε`}                     | {`health`, `inventory`, `team`, `item`, `character`, `intVal`, `!`, `)`, `:`, `;`, `$`}   |
 
 #### State machine diagram
 
@@ -108,25 +231,33 @@ The syntax tree of the grammar is the following :
 
 ##### The accepting states
 
-| state number | accepting   |
-|--------------|-------------|
-| 101          | A string    |
-| 102          | A keyword   |
-| 103          | An integer  |
-| 104          | An arrow    |
-| 105          | A semicolon |
+| state number | accepting               |
+|--------------|-------------------------|
+| 101          | A string                |
+| 102          | A keyword               |
+| 103          | A variable              |
+| 104          | An integer              |
+| 105          | An arrow                |
+| 106          | A minus sign            |
+| 107          | A semi colon            |
+| 108          | A colon                 |
+| 109          | An opening parenthesis  |
+| 110          | A closing parenthesis   |
+| 111          | A plus sign             |
+| 112          | An exclamation mark     |
 
 #### Translation table
 
 The translation table of the grammar is the following :
 
-| state | space | `"`   | `\`   | `-`   | `>`   | `;`   | `intVal` | `charVal` |
-|-------|-------|-------|-------|-------|-------|-------|----------|-----------|
-| **0** | 0     | 1     | ❌     | 5     | ❌     | *105* | 4        | 3         |
-| **1** | 1     | *101* | 2     | 1     | 1     | 1     | 1        | 1         |
-| **2** | 1     | 1     | 1     | 1     | 1     | 1     | 1        | 1         |
-| **3** | *102* | *102* | *102* | *102* | *102* | *102* | 3        | 3         |
-| **4** | *103* | *103* | *103* | *103* | *103* | *103* | 4        | *103*     |
-| **5** | ❌     | ❌     | ❌     | ❌     | *104* | ❌     | ❌        | ❌         |
+| state | space | `"`   | `\`   | `-`   | `>`   | `;`   | `:`   | `(`   | `)`   | `+`   | `!`   |`$`    | `intVal` | `charVal` |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|----------|-----------|
+| **0** | 0     | 1     | ❌    | 6     | ❌   | *107* | *108* | *109* | *110* | *111* | *112* | 4     | 5        | 3         |
+| **1** | 1     | *101* | 2     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1        | 1         |
+| **2** | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1        | 1         |
+| **3** | *102* | *102* | *102* | *102* | *102* | *102* | *102* | *102* | *102* | *102* | *102* | *102* | 3        | 3         |
+| **4** | *103* | *103* | *103* | *103* | *103* | *103* | *103* | *103* | *103* | *103* | *103* | *103* | 4        | 4         |
+| **5** | *104* | *104* | *104* | *104* | *104* | *104* | *104* | *104* | *104* | *104* | *104* | *104* | 4        | *104*     |
+| **6** | *106* | *106* | *106* | *106* | *105* |*106*  | *106* | *106* | *106* | *106* | *106* | *106* | *106*    | *106*     |
 
 The states in italic are the accepting states. Some states that are not valid are represented by a cross.

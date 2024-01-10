@@ -320,7 +320,7 @@ public class TreeBuilder {
             return null;
         }
         Node actions = new Node(NodeType.SET_ACTIONS);
-        // Get the action node
+        // Get the action nodes
         actions.addChild(J());
 
         // Check the end of the action

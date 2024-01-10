@@ -53,16 +53,17 @@ public class TreeBuilder {
 
         // Checking the title
         checkTokenAndReturn(Tokens.setTitle);
+        Node node = new Node(NodeType.SET_TITLE);
 
         // Adding the title to the node
         Token<?> t = checkTokenAndReturn(Tokens.strValue);
         Node str = new Node(NodeType.STR, t.value());
+        node.addChild(str);
 
         // Checking the end of the statement
         checkTokenAndReturn(Tokens.instructionEnd);
 
-        nodeStmt.addChild(new Node(NodeType.SET_TITLE));
-        nodeStmt.addChild(str);
+        nodeStmt.addChild(node);
         nodeStmt.addChild(A());
         nodeStmt.addChild(B());
         nodeStmt.addChild(C());

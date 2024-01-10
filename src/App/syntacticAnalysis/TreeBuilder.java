@@ -129,10 +129,10 @@ public class TreeBuilder {
 
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
-        Node var = new Node(NodeType.VAR, t.value());
+        Node variable = new Node(NodeType.VAR, t.value());
 
         Node node = new Node(NodeType.ADD_ITEM);
-        node.addChild(var);
+        node.addChild(variable);
 
         // Check the end of the statement
         checkTokenAndReturn(Tokens.instructionEnd);
@@ -150,7 +150,7 @@ public class TreeBuilder {
 
         // Get the Var name
         Token<?> t = checkTokenAndReturn(Tokens.varValue);
-        Node var = new Node(NodeType.VAR, t.value());
+        Node variable = new Node(NodeType.VAR, t.value());
         // Get the int initial place
         t = checkTokenAndReturn(Tokens.intValue);
         Node init = new Node(NodeType.INT, t.value());
@@ -159,7 +159,7 @@ public class TreeBuilder {
         Node hp = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.ADD_CHARACTER);
-        node.addChild(var);
+        node.addChild(variable);
         node.addChild(init);
         node.addChild(hp);
 
@@ -197,7 +197,7 @@ public class TreeBuilder {
 
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
-        Node var = new Node(NodeType.VAR, t.value());
+        Node variable = new Node(NodeType.VAR, t.value());
         // Check the colon
         checkTokenAndReturn(Tokens.colon);
         // Get the int quantity
@@ -205,7 +205,7 @@ public class TreeBuilder {
         Node qt = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.SET_INVENTORY_SLOT);
-        node.addChild(var);
+        node.addChild(variable);
         node.addChild(qt);
         return node;
     }
@@ -493,7 +493,7 @@ public class TreeBuilder {
         checkTokenAndReturn(Tokens.colon);
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
-        Node var = new Node(NodeType.VAR, t.value());
+        Node variable = new Node(NodeType.VAR, t.value());
         // Check the colon
         checkTokenAndReturn(Tokens.colon);
         // Get the int quantity
@@ -501,7 +501,7 @@ public class TreeBuilder {
         Node qt = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.SET_CONDITION_BODY, "item");
-        node.addChild(var);
+        node.addChild(variable);
         node.addChild(qt);
 
         return node;
@@ -518,10 +518,10 @@ public class TreeBuilder {
         checkTokenAndReturn(Tokens.colon);
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
-        Node var = new Node(NodeType.VAR, t.value());
+        Node variable = new Node(NodeType.VAR, t.value());
         Node qt = new Node(NodeType.INT, 1);
         Node node = new Node(NodeType.SET_CONDITION, "character");
-        node.addChild(var);
+        node.addChild(variable);
         node.addChild(qt);
         return node;
     }

@@ -15,7 +15,7 @@ public class GrammarSettings {
     /**
      * States that once reached, the last character must be read again
      */
-    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(102, 103);
+    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(102, 103, 104, 105);
 
     /**
      * Transition table of the lexical analysis

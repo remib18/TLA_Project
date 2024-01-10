@@ -18,7 +18,13 @@ public enum Tokens {
     colon,
     openParenthesis,
     closeParenthesis,
-    exclamationPoint;
+    exclamationPoint,
+    health,
+    inventory,
+    team,
+    item,
+    character;
+
 
     @Override
     public String toString() {
@@ -41,6 +47,11 @@ public enum Tokens {
             case openParenthesis -> "openParenthesis";
             case closeParenthesis -> "closeParenthesis";
             case exclamationPoint -> "exclamationPoint";
+            case health -> "health";
+            case inventory -> "inventory";
+            case team -> "team";
+            case item -> "item";
+            case character -> "character";
         };
     }
 }

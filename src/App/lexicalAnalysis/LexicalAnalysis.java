@@ -119,7 +119,12 @@ public class LexicalAnalysis {
                     case "addCharacter" -> Tokens.addCharacter;
                     case "addItem" -> Tokens.addItem;
                     case "addLocation" -> Tokens.addLocation;
-                    default -> Tokens.strValue;
+                    case "health" -> Tokens.health;
+                    case "inventory" -> Tokens.inventory;
+                    case "team" -> Tokens.team;
+                    case "character" -> Tokens.character;
+                    case "item" -> Tokens.item;
+                    default -> throw new UnexpectedTokenException(STR."Unexpected token with symbol index : \{symbolIndex} and buffer : \{buffer.toString()}");
                 };
                 tokenValue = bufferContent;
                 break;

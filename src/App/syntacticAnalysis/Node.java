@@ -9,6 +9,7 @@ public class Node {
     private final NodeType type;
     private Object arg1;
     private Object arg2;
+    private Object arg3;
 
     /**
      * Create a node with a value
@@ -30,6 +31,13 @@ public class Node {
         this.type = nodeType;
         this.arg1 = arg1;
         this.arg2 = arg2;
+    }
+
+    public Node(NodeType nodeType, Object arg1, Object arg2, Object arg3) {
+        this.type = nodeType;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+        this.arg3 = arg3;
     }
 
     /**
@@ -95,6 +103,14 @@ public class Node {
      */
     public Object getArg2() {
         return arg2;
+    }
+
+    /**
+     * Get the third argument of the node
+     * @return The value of the node
+     */
+    public Object getArg3() {
+        return arg3;
     }
 
     /**

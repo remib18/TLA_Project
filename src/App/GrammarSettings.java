@@ -15,26 +15,35 @@ public class GrammarSettings {
     /**
      * States that once reached, the last character must be read again
      */
-    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(102, 103);
+    public static final Set<Integer> STATES_WITH_ROLLBACK = Set.of(102, 103, 104, 106);
 
     /**
      * Transition table of the lexical analysis
      */
     private static final Integer[][] TRANSITIONS = {
-            //       espace   "      \    -     >    ;    intVal     charVal
-            /* 0 */ {   0,     1,   -1,   5,   -1,  105,    4,          3   },
-            /* 1 */ {   1,   101,    2,   1,    1,    1,    1,          1   },
-            /* 2 */ {   1,     1,    1,   1,    1,    1,    1,          1   },
-            /* 3 */ { 102,   102,  102, 102,  102,  102,    3,          3   },
-            /* 4 */ { 103,   103,  103, 103,  103,  103,    4,        103   },
-            /* 5 */ {  -1,    -1,   -1,  -1,  104,   -1,   -1,         -1   },
+            //       espace   "      \    -     >    ;      :       (       )       +       !       $    intVal     charVal
+            /* 0 */ {   0,     1,   -1,   5,   -1,  107,  108,    109,    110,    111,    112,     4,      5,          3   },
+            /* 1 */ {   1,   101,    2,   1,    1,    1,    1,      1,       1,     1,      1,      1,     1,          1   },
+            /* 2 */ {   1,     1,    1,   1,    1,    1,    1,      1,       1,     1,      1,      1,     1,          1   },
+            /* 3 */ { 102,   102,  102, 102,  102,  102,  102,    102,     102,   102,    102,    102,     3,          3   },
+            /* 4 */ { 103,   103,  103, 103,  103,  103,  103,    103,     103,   103,    103,    103,     4,          4   },
+            /* 5 */ { 104,   104,  104, 104,  104,  104,  104,    104,     104,   104,    104,    104,     5,        104   },
+            /* 6 */ { 106,   106,  106, 106,  105,  106,  106,    106,     106,   106,    106,    106,   106,        106   }
 
             // -1  erreur
             // 101 acceptation d'un "
             // 102 acceptation d'un charVal (retourArriere)
-            // 103 acceptation d'un intVal  (retourArriere)
-            // 104 acceptation d'un >
-            // 105 acceptation d'un ;
+            // 103 acceptation d'une variable $ (retourArriere)
+            // 104 acceptation d'un intVal (retourArriere)
+            // 105 acceptation d'un -> 
+            // 106 acceptation d'un - (retourArriere)
+            // 107 acceptation d'un ;
+            // 108 acceptation d'un :
+            // 109 acceptation d'un (
+            // 110 acceptation d'un )
+            // 111 acceptation d'un +
+            // 112 acceptation d'un !
+
     };
 
     /**
@@ -48,24 +57,26 @@ public class GrammarSettings {
             case ' ', '\t', '\n' -> 0;
             case '"' -> 1;
             case '\\' -> 2;
-                case '-' -> 3;
-                case '>' -> 4;
-                case ';' -> 5;
-                case '.' -> 7;
-                case '\'' -> 7;
-                case ',' -> 7;
-                case '?' -> 7;
-                default   -> {
-                    if (Character.isDigit(c)) {
-                        yield 6;
-                    }
-                    if (Character.isWhitespace(c)) {
-                        yield 0;
-                    }
-                    else {
-                        yield 7;
-                    }
+            case '-' -> 3;
+            case '>' -> 4;
+            case ';' -> 5;
+            case ':' -> 6;
+            case '(' -> 7;
+            case ')' -> 8;
+            case '+' -> 9;
+            case '!' -> 10;
+            case '$' -> 11;
+            default   -> {
+                if (Character.isDigit(c)) {
+                    yield 12;
                 }
+                if (Character.isWhitespace(c)) {
+                    yield 0;
+                }
+                else {
+                    yield 13;
+                }
+            }
         };
     }
 

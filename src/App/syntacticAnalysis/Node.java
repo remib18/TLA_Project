@@ -53,6 +53,14 @@ public class Node {
     }
 
     /**
+     * Get the children of the node
+     * @return The children of the node
+     */
+    public List<Node> getChildren() {
+        return this.child;
+    }
+
+    /**
      * Get the number of child of the node
      * @return The number of child of the node
      */

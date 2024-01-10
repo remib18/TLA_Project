@@ -33,12 +33,10 @@ public class Interpreter {
         for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
             Node child = root.getChildAt(rootChildIndex);
             switch (child.getType()) {
-                case SET_TITLE -> title = (String) child.getArg1();
+                case SET_TITLE -> title = getTitle(child);
                 case ADD_LOCATION -> {
-                    int id = (int) child.getArg1();
-                    String description = (String) child.getArg2();
-                    Location location = new Location(id, description, getPropositions(child), new ArrayList<>());
-                    locations.put((Integer) child.getArg1(), location);
+                    Location location = buildLocation(child);
+                    locations.put(location.id(), location);
                 }
                 case STATEMENT -> throw new RuntimeException("Statement node should not be here");
                 case OPTION_DEFINITION -> throw new RuntimeException("Option definition node should not be here");
@@ -47,52 +45,16 @@ public class Interpreter {
         return new Adventure(title, new HashMap<>(), new HashMap<>(), locations, 5, new HashMap<>());
     }
 
-    private static List<Proposition> getPropositions(Node node) {
-        if (node.getType() != NodeType.ADD_LOCATION) {
-            throw new IllegalArgumentException("Node is not a location");
-        }
-        List<Proposition> propositions = new ArrayList<>();
-        for (int i = 0; i < node.getNumberOfChild(); i++) {
-            Node child = node.getChildAt(i);
-            if (child.getType() == NodeType.OPTION_DEFINITION) {
-                Proposition proposition = new Proposition(new ArrayList<>(), (String) child.getArg2(), (Integer) child.getArg1(), new ArrayList<>());
-                propositions.add(proposition);
-            }
-        }
-        return propositions;
-    }
-
     /**
-     * Récupère les conditions d'un nœud de type OPTION_DEFINITION
+     * Retourne le titre d'un nœud de type SET_TITLE
      * @param node - Le nœud
-     * @return La liste des conditions
+     * @return Le titre
      */
-    private static List<Condition> getConditions(Node node) {
-        checkNodeType(node, NodeType.OPTION_DEFINITION);
-        // TODO: Implement @Benoit
-        return new ArrayList<>();
-    }
-
-    /**
-     * Récupère les événements d'un nœud de type OPTION_DEFINITION ou ADD_LOCATION
-     * @param node - Le nœud
-     * @return La liste des événements
-     */
-    private static List<Event> getEvents(Node node) {
-        checkNodeType(node, NodeType.OPTION_DEFINITION, NodeType.ADD_LOCATION);
-        // TODO: Implement @Pierre-Alexis
-        return new ArrayList<>();
-    }
-
-    /**
-     * Construit un emplacement à partir d'un nœud de type ADD_LOCATION
-     * @param node - Le nœud
-     * @return L'emplacement
-     */
-    private static Location buildLocation(Node node) {
-        checkNodeType(node, NodeType.ADD_LOCATION);
-        // TODO: Implement @Rémi
-        return null;
+    private static String getTitle(Node node) {
+        checkNodeType(node, NodeType.SET_TITLE);
+        var child = node.getChildAt(0);
+        checkNodeType(child, NodeType.STR);
+        return (String) child.getValue();
     }
 
     /**
@@ -115,6 +77,76 @@ public class Interpreter {
         checkNodeType(node, NodeType.ADD_ITEM);
         // TODO: Implement @Rémi
         return null;
+    }
+
+    /**
+     * Construit un emplacement à partir d'un nœud de type ADD_LOCATION
+     * @param node - Le nœud
+     * @return L'emplacement
+     */
+    private static Location buildLocation(Node node) {
+        checkNodeType(node, NodeType.ADD_LOCATION);
+        Integer id = null;
+        String description = null;
+        List<Event> events = new ArrayList<>();
+        List<Proposition> propositions = new ArrayList<>();
+
+        List<Node> propositionNodes = new ArrayList<>();
+
+        for (Node child : node.getChildren()) {
+            switch (child.getType()) {
+                case INT -> id = (Integer) child.getValue();
+                case STR -> description = (String) child.getValue();
+                case OPTION_DEFINITION -> propositionNodes.add(child);
+                case SET_ACTIONS -> events.addAll(getEvents(child));
+                default -> throw new RuntimeException(STR."Unexpected node type: \"\{child.getType()}\" in an ADD_LOCATION node.");
+            }
+        }
+
+        propositions = getPropositions(propositionNodes);
+
+        return new Location(id, description, propositions, events);
+    }
+
+    /**
+     * Construit les propositions à partir d'une liste de nœuds de type OPTION_DEFINITION
+     * @param nodes - La liste de nœuds
+     * @return La liste des propositions
+     */
+    private static List<Proposition> getPropositions(List<Node> nodes) {
+        List<Proposition> propositions = new ArrayList<>();
+        for (Node node : nodes) {
+            checkNodeType(node, NodeType.OPTION_DEFINITION);
+            String description = (String) node.getChildAt(0).getValue();
+            Integer targetLocationId = (Integer) node.getChildAt(1).getValue();
+            List<Condition> conditions = getConditions(node.getChildAt(2));
+            List<Event> events = getEvents(node.getChildAt(3));
+
+            propositions.add(new Proposition(conditions, description, targetLocationId, events));
+        }
+        return propositions;
+    }
+
+    /**
+     * Construit les conditions à partir d'un nœud de type SET_CONDITIONS
+     * @param node - Le nœud
+     * @return La liste des conditions
+     */
+    private static List<Condition> getConditions(Node node) {
+        checkNodeType(node, NodeType.SET_CONDITIONS);
+        // TODO: Implement @Benoit
+        return new ArrayList<>();
+    }
+
+    /**
+     * Construit les événements à partir d'un nœud de type SET_ACTIONS
+     * @param node - Le nœud
+     * @return La liste des événements
+     */
+    private static List<Event> getEvents(Node node) {
+        checkNodeType(node, NodeType.SET_ACTIONS);
+        // TODO: Implement @Pierre-Alexis
+        return new ArrayList<>();
     }
 
     /**

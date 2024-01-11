@@ -116,11 +116,11 @@ An event is what happens when a player enter a location or performs an action. T
 
 The operations are divided in three sections : the kind, the operator and the value.
 
-| kind      | operator                        | value          | example                                                                     |
-| --------- | ------------------------------- | -------------- | --------------------------------------------------------------------------- |
-| health    | `+` to add ; `-` to substract   | integer        | `health+3` to add 3 health points                                           |
-| inventory | `+` to give ; `-` to remove     | item name      | `inventory-$sword` to remove the sword from the inventory                   |
-| team      | `+` to follow ; `-` to unfollow | character name | `team+$John` to make John follow the player ; John can be a good or bad guy |
+| kind      | operator                        | value          | example                                                                      |
+|-----------|---------------------------------|----------------|------------------------------------------------------------------------------|
+| health    | `+` to add ; `-` to substract   | integer        | `health:+3` to add 3 health points                                           |
+| inventory | `+` to give ; `-` to remove     | item name      | `inventory:-$sword` to remove the sword from the inventory                   |
+| team      | `+` to follow ; `-` to unfollow | character name | `team:+$John` to make John follow the player ; John can be a good or bad guy |
 
 
 #### The actions
@@ -132,7 +132,7 @@ We do recommend to put the actions in a new line and add a tabulation before the
 Here are the possible conditions :
 
 | kind      | value          | option                       | example                                                              |
-| --------- | -------------- | ---------------------------- | -------------------------------------------------------------------- |
+|-----------|----------------|------------------------------|----------------------------------------------------------------------|
 | item      | item name      | quantity (integer, required) | `item:$sword:1` requires 1 sword ; `item:$coin:10` requires 10 coins |
 | character | character name | none                         | `character:$John` requires John to follow the player                 |
 
@@ -144,7 +144,7 @@ Example :
 addLocation 1 "You are in a dark room"
     -> 2 "Go to the garden"
     -> 3 "Go to the kitchen";
-addLocation 2 "You are in a garden with toxic plants" (health-2)
+addLocation 2 "You are in a garden with toxic plants" (health:-2)
     -> 1 "Go back to the dark room"
     -> (item:$sword:1 character:$John) 2 "Attack the plants";
 addLocation 3 "You are in a kitchen"

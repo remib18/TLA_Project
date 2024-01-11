@@ -32,6 +32,9 @@ public class Node {
      * @param n The child to add
      */
     public void addChild(Node n) {
+        if(Objects.isNull(n)){
+            return;
+        }
         child.add(n);
     }
 
@@ -49,7 +52,18 @@ public class Node {
      * @return The child at the given index
      */
     public Node getChildAt(int i) {
-        return this.child.get(i);
+        if (i < 0 || i >= child.size()) {
+            return null;
+        }
+        return child.get(i);
+    }
+
+    /**
+     * Get the children of the node
+     * @return The children of the node
+     */
+    public List<Node> getChildren() {
+        return this.child;
     }
 
     /**
@@ -90,15 +104,29 @@ public class Node {
      * Display a node in the console
      * @param node node to display
      * @param depth indentation level
+     * @param error if true, display in stderr
      */
-    private static void displayNode(Node node, int depth) {
+    private static void displayNode(Node node, int depth, boolean error) {
         String ident = " \t\t".repeat(depth);
         int nbNoeudsEnfants =  node.getNumberOfChild();
         String s = STR."\{ident}\{node} (\{nbNoeudsEnfants} child nodes)";
-        System.out.println(s);
-        for(int i = 0; i < nbNoeudsEnfants; i++) {
-            displayNode(node.getChildAt(i), depth + 1);
+        if(error) {
+            System.err.println(s);
+        } else {
+            System.out.println(s);
         }
+        for(int i = 0; i < nbNoeudsEnfants; i++) {
+            displayNode(node.getChildAt(i), depth + 1, error);
+        }
+    }
+
+    /**
+     * Display a node in the console
+     * @param node node to display
+     * @param error if true, display in stderr
+     */
+    public static void displayNode(Node node, boolean error) {
+        displayNode(node, 0, true);
     }
 
     /**
@@ -106,7 +134,7 @@ public class Node {
      * @param node node to display
      */
     public static void displayNode(Node node) {
-        displayNode(node, 0);
+        displayNode(node, 0, false);
     }
 
 }

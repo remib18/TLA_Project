@@ -97,19 +97,21 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> B() throws UnexpectedTokenException {
-        if (isEndOfInput()) {
-            return null;
+        Tokens type = readTokenType();
+        cursor--;
+        if (isEndOfInput() || (type != Tokens.addItem && type != Tokens.addCharacter)) {
+            return new ArrayList<>();
         }
         List<Node> res = new ArrayList<>();
 
         Node next = F();
         if (!Objects.isNull(next)) {
             res.add(next);
-        } else {
-            next = E();
-            if (!Objects.isNull(next)) {
-                res.add(next);
-            }
+        }
+        next = E();
+        if (!Objects.isNull(next)) {
+            res.add(next);
+
         }
 
         List<Node> prev = B();
@@ -125,7 +127,11 @@ public class TreeBuilder {
      */
     private Node E() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.addItem);
+        Tokens type = readTokenType();
+        if(type != Tokens.addItem){
+            cursor--;
+            return null;
+        }
 
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
@@ -146,7 +152,11 @@ public class TreeBuilder {
      */
     private Node F() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.addCharacter);
+        Tokens type = readTokenType();
+        if(type != Tokens.addCharacter){
+            cursor--;
+            return null;
+        }
 
         // Get the Var name
         Token<?> t = checkTokenAndReturn(Tokens.varValue);
@@ -216,7 +226,7 @@ public class TreeBuilder {
      */
     private List<Node> D() throws UnexpectedTokenException {
         if (isEndOfInput()) {
-            return null;
+            return new ArrayList<>();
         }
         List<Node> res = new ArrayList<>();
         Node next = G();
@@ -273,11 +283,12 @@ public class TreeBuilder {
             return res;
         }
 
+        Node node = new Node(NodeType.OPTION_DEFINITION);
+
         // Get the condition(s)
         Node next = M();
-        Node conditions = new Node(NodeType.SET_CONDITIONS);
         if (next != null) {
-            conditions.addChild(next);
+            node.addChild(next);
         }
 
         // Get the int identifier
@@ -288,8 +299,7 @@ public class TreeBuilder {
         t = checkTokenAndReturn(Tokens.strValue);
         Node description = new Node(NodeType.STR, t.value());
 
-        Node node = new Node(NodeType.OPTION_DEFINITION);
-        node.addChild(conditions);
+
         node.addChild(id);
         node.addChild(description);
 
@@ -314,8 +324,8 @@ public class TreeBuilder {
      */
     private Node I() throws UnexpectedTokenException {
         // Check the token
-        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.openParenthesis);
-        if (t.type() == Tokens.arrow) {
+        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.openParenthesis, Tokens.instructionEnd);
+        if (t.type() == Tokens.arrow || t.type() == Tokens.instructionEnd) {
             cursor--;
             return null;
         }
@@ -335,8 +345,9 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> J() throws UnexpectedTokenException {
-        if (this.readTokenType()==Tokens.closeParenthesis) {
-            cursor--;
+        var type = this.readTokenType();
+        cursor--;
+        if (type == Tokens.closeParenthesis) {
             return null;
         }
         List<Node> res = new ArrayList<>();
@@ -356,8 +367,9 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node Jp() throws UnexpectedTokenException {
-        if (this.readTokenType()==Tokens.closeParenthesis) {
-            cursor--;
+        var type = this.readTokenType();
+        cursor--;
+        if (type == Tokens.closeParenthesis) {
             return null;
         }
 
@@ -374,8 +386,13 @@ public class TreeBuilder {
         action.addChild(L);
 
         // Get the var value
-        Token <?> t = checkTokenAndReturn(Tokens.varValue);
-        Node name = new Node(NodeType.VAR, t.value());
+        Token <?> t = switch ((String) K.getValue()) {
+            case "health", "inventory" -> checkTokenAndReturn(Tokens.intValue);
+            case "team" -> checkTokenAndReturn(Tokens.varValue);
+            default -> throw new UnexpectedTokenException("Expected a token, but found null");
+        };
+        NodeType nameType = t.type() == Tokens.intValue ? NodeType.INT : NodeType.VAR;
+        Node name = new Node(nameType, t.value());
         action.addChild(name);
 
         return action;
@@ -396,7 +413,12 @@ public class TreeBuilder {
      */
     private Node L() throws UnexpectedTokenException {
         Token<?> t = checkTokenAndReturn(Tokens.minus, Tokens.plus);
-        return new Node(NodeType.SET_ACTION_OP, t.value());
+        String value = switch (t.type()) {
+            case plus -> "+";
+            case minus -> "-";
+            default -> throw new UnexpectedTokenException("Expected a token, but found null");
+        };
+        return new Node(NodeType.SET_ACTION_OP, value);
     }
 
     /**
@@ -405,7 +427,7 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node M() throws UnexpectedTokenException {
-// Check the token
+        // Check the token
         Token<?> t = checkTokenAndReturn(Tokens.intValue, Tokens.openParenthesis);
         if (t.type() == Tokens.intValue) {
             cursor--;
@@ -419,6 +441,9 @@ public class TreeBuilder {
         if(!Objects.isNull(res)){
             node.addChild(res);
         }
+
+        // Todo: error caused somewhere here
+        // Node.displayNode(node);
 
         // Check the end of the action
         checkTokenAndReturn(Tokens.closeParenthesis);
@@ -434,15 +459,17 @@ public class TreeBuilder {
     private List<Node> Mp() throws UnexpectedTokenException {
         List<Node> res = new ArrayList<>();
         Tokens t = this.readTokenType();
-        cursor--;
         if (t == Tokens.closeParenthesis) {
+            cursor--;
             return null;
         }
+        List<Node> prev = Mp();
+        cursor--;
+
         Node next = N();
         if(!Objects.isNull(next)) {
             res.add(next);
         }
-        List<Node> prev = J();
         if (!Objects.isNull(prev)) {
             res.addAll(prev);
         }
@@ -454,12 +481,21 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node N() throws UnexpectedTokenException {
-        Node node = new Node(NodeType.SET_CONDITION, Neg());
+        final Boolean neg = Neg();
+        if (Objects.isNull(neg)) {
+            return null;
+        }
+        Node node = new Node(NodeType.SET_CONDITION, neg);
 
         List<Node> next = Np();
         if (!Objects.isNull(next)){
             node.addChild(next);
         }
+
+        if (!Objects.isNull(next) && next.isEmpty()) {
+            return null;
+        }
+
         return node;
     }
 
@@ -540,10 +576,15 @@ public class TreeBuilder {
      *
      * @return The node built
      */
-    private Boolean Neg() throws UnexpectedTokenException {
-        checkTokenAndReturn(Tokens.exclamationPoint);
-        Tokens t = this.readTokenType();
-        if(t != Tokens.exclamationPoint){
+    private Boolean Neg() {
+        Tokens type = this.readTokenType();
+        Tokens nextType = this.readTokenType();
+        cursor--;
+        if (nextType != Tokens.item && nextType != Tokens.character) {
+            cursor--;
+            return null;
+        }
+        if(type != Tokens.exclamationPoint){
             cursor--;
             return true;
         }
@@ -596,8 +637,31 @@ public class TreeBuilder {
             throw new UnexpectedTokenException("Expected a token, but found null");
         }
         if (!Arrays.asList(expected).contains(t.type())) {
+            displayErrorLocation();
             throw new UnexpectedTokenException(expected, t.type());
         }
         return t;
+    }
+
+    /**
+     * Utility method that display the location of the error in the input to get some context
+     */
+    private void displayErrorLocation() {
+        final int actualCursor = cursor - 1;
+        final int margin = 5;
+        int start = Math.max(0, actualCursor - margin);
+        int end = Math.min(tokens.size(), actualCursor + margin);
+        System.out.println(STR."Error at token \{actualCursor}:");
+        for (int i = start; i < end; i++) {
+            try {
+                if (i == actualCursor) {
+                    final String ANSI_RED = "\u001B[31m";
+                    final String ANSI_RESET = "\u001B[0m";
+                    System.out.println(STR."\{ANSI_RED}-> \{tokens.get(i)}\{ANSI_RESET}");
+                } else {
+                    System.out.println(STR."      \{tokens.get(i)}");
+                }
+            } catch (IndexOutOfBoundsException _) {}
+        }
     }
 }

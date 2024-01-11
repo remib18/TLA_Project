@@ -8,7 +8,7 @@ import java.util.Objects;
  * 
  * Composée d'une description et d'aucune, une ou plusieurs propositions.
  */
-public record Location(Integer id, String description, List<Proposition> propositions) {
+public record Location(Integer id, String description, List<Proposition> propositions, List<Event> events) {
     private static Integer nextId = 0;
     private static Boolean createdWithIds = null;
 
@@ -31,8 +31,8 @@ public record Location(Integer id, String description, List<Proposition> proposi
      * @param description - The description of the location
      * @param propositions - The propositions of the location
      */
-    public Location(String description, List<Proposition> propositions) {
-        this(null, description, propositions);
+    public Location(String description, List<Proposition> propositions, List<Event> events) {
+        this(null, description, propositions, events);
     }
 
     /**
@@ -88,5 +88,14 @@ public record Location(Integer id, String description, List<Proposition> proposi
     @Override
     public List<Proposition> propositions() {
         return propositions;
+    }
+
+    /**
+     * Get the events of the location
+     * @return The events of the location
+     */
+    @Override
+    public List<Event> events() {
+        return events;
     }
 }

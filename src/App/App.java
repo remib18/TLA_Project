@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 /*
  * Classe principale.
@@ -32,12 +33,8 @@ import java.util.*;
 
 public class App implements ActionListener {
 
-    /**
-     * Nombre de lignes dans la zone de texte
-     */
-    final int linesNumber = 20;
+    Adventure adventure;
 
-    Map<Integer, Location> locations;
     Location currentLocation;
 
     JFrame frame;
@@ -62,16 +59,11 @@ public class App implements ActionListener {
 
         String file = "adventures/"+AdventureAnalyzer.getFile();
         System.out.println(file);
-        Adventure adventure;
         try {
             adventure = Interpreter.interpret(file);
         } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException | IllegalCaracterException e) {
             throw new RuntimeException(e);
         }
-
-
-        // Charge le contenu de l'aventure
-        locations = adventure.locations();
 
         // Prépare l'IHM
         textPane = new JTextPane();
@@ -82,7 +74,7 @@ public class App implements ActionListener {
 
         btns = new ArrayList<>();
 
-        frame = new JFrame(adventure.title());
+        frame = new JFrame(adventure.getTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
@@ -99,8 +91,18 @@ public class App implements ActionListener {
         }});
 
         // Démarre l'aventure au lieu n° 1
-        currentLocation = locations.get(1);
         initLocations();
+
+        adventure.getState().subscribe(state -> {
+            if (state.isGameOver()) {
+                JOptionPane.showMessageDialog(null, STR."Oh no, you died !");
+                System.exit(0);
+            }
+            if (state.isGameWon()) {
+                JOptionPane.showMessageDialog(null, STR."Congratulations, you won !");
+                System.exit(0);
+            }
+        });
 
         frame.pack();
         frame.setVisible(true);
@@ -111,14 +113,16 @@ public class App implements ActionListener {
      * à ce lieu
      */
     void initLocations() {
+        Location location = adventure.getCurrentLocation();
         for(JButton btn: btns) {
             mainPanel.remove(btn);
         }
         btns.clear();
-        display(currentLocation.description());
+        display(location.description());
         frame.pack();
-        for(int i = 0; i< currentLocation.propositions().size(); i++) {
-            JButton btn = new JButton(STR."<html><p>\{currentLocation.propositions().get(i).text()}</p></html>");
+        List<Proposition> propositionList = adventure.getAvailablePropositions(location.id());
+        for(int i = 0; i< propositionList.size(); i++) {
+            JButton btn = new JButton(STR."<html><p>\{propositionList.get(i).text()}</p></html>");
             btn.setActionCommand(String.valueOf(i));
             btn.addActionListener(this);
             mainPanel.add(btn, new GridBagConstraints() {{
@@ -139,23 +143,17 @@ public class App implements ActionListener {
         // Retrouve l'index de la proposition
         int index = Integer.parseInt(event.getActionCommand());
 
-        // Retrouve la proposition
-        Proposition proposition = currentLocation.propositions().get(index);
+        Proposition proposition = adventure.performProposition(index);
 
-        // Recherche le lieu désigné par la proposition
-        Location location = locations.get(proposition.locationNumber());
-        if (location != null) {
+        // Mise à jour de l'emplacement du joueur
+        Location location = adventure.getCurrentLocation();
+        if (!Objects.isNull(location) && !Objects.isNull(proposition)) {
 
             // Affiche la proposition qui vient d'être choisie par le joueur
             display(STR."> \{proposition.text()}");
 
             // Affichage du nouveau lieu et création des boutons des nouvelles propositions
-            currentLocation = location;
             initLocations();
-        } else {
-            // Cas particulier : le lieu est déclarée dans une proposition mais pas encore décrit
-            // (lors de l'élaboration de l'aventure par exemple)
-            JOptionPane.showMessageDialog(null, STR."Lieu n° \{proposition.locationNumber()} à implémenter");
         }
     }
 

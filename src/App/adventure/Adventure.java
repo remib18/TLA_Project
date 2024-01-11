@@ -131,7 +131,7 @@ public class Adventure {
         if (Objects.isNull(currentLocation)) {
             return null;
         }
-        Proposition proposition = currentLocation.propositions().get(id);
+        Proposition proposition = getAvailablePropositions(currentLocation.id()).get(id);
         state.update(Event.execute(proposition.events(), state.getValue(), proposition.locationNumber()));
         currentLocation = getLocation(state.getValue().getCurrentLocationId());
         if (Objects.isNull(currentLocation)) {

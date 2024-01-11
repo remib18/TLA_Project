@@ -42,7 +42,7 @@ public class Interpreter {
                 case SET_HEALTH -> health = getHealth(child);
                 case ADD_CHARACTER -> {
                     Character character = buildCharacter(child);
-                    if (!characters.containsKey(character.getName())) {
+                    if (characters.containsKey(character.getName())) {
                         throw new RuntimeException(STR."Character \"\{character.getName()}\" has already been defined.");
                     }
                     characters.put(character.getName(), character);
@@ -53,7 +53,7 @@ public class Interpreter {
                 }
                 case SET_INVENTORY -> inventory = getInventory(child, items);
                 case ADD_LOCATION -> {
-                    Location location = buildLocation(child);
+                    Location location = buildLocation(child, items, characters);
                     locations.put(location.id(), location);
                 }
                 default -> throw new RuntimeException(STR."Unexpected node type: \"\{child.getType()}\" in the root node.");
@@ -167,9 +167,11 @@ public class Interpreter {
     /**
      * Build and return a location
      * @param node - The node (of type ADD_LOCATION)
+     * @param items - The items of the adventure
+     * @param characters - The characters of the adventure
      * @return The location
      */
-    private static Location buildLocation(Node node) {
+    private static Location buildLocation(Node node, HashMap<String, Item> items, HashMap<String, Character> characters) {
         checkNodeType(node, NodeType.ADD_LOCATION);
         Integer id = null;
         String description = null;
@@ -188,7 +190,7 @@ public class Interpreter {
             }
         }
 
-        propositions = getPropositions(propositionNodes);
+        propositions = getPropositions(propositionNodes, items, characters);
 
         return new Location(id, description, propositions, events);
     }
@@ -196,16 +198,50 @@ public class Interpreter {
     /**
      * Build and return the propositions of a location
      * @param nodes - The nodes (of type OPTION_DEFINITION)
+     * @param items - The items of the adventure
+     * @param characters - The characters of the adventure
      * @return The propositions
      */
-    private static List<Proposition> getPropositions(List<Node> nodes) {
+    private static List<Proposition> getPropositions(List<Node> nodes, HashMap<String, Item> items, HashMap<String, Character> characters) {
         List<Proposition> propositions = new ArrayList<>();
         for (Node node : nodes) {
             checkNodeType(node, NodeType.OPTION_DEFINITION);
-            String description = (String) node.getChildAt(0).getValue();
-            Integer targetLocationId = (Integer) node.getChildAt(1).getValue();
-            List<Condition> conditions = getConditions(node.getChildAt(2));
-            List<Event> events = getEvents(node.getChildAt(3));
+
+            Node node1 = node.getChildAt(0);
+            Node node2 = node.getChildAt(1);
+            Node node3 = node.getChildAt(2);
+            Node node4 = node.getChildAt(3);
+
+            List<Condition> conditions = null;
+            Integer targetLocationId = null;
+            String description = null;
+            List<Event> events = null;
+
+            switch (node1.getType()) {
+                case SET_CONDITIONS -> {
+                    conditions = getConditions(node1, items, characters);
+
+                    checkNodeType(node2, NodeType.INT);
+                    targetLocationId = (Integer) node2.getValue();
+
+                    checkNodeType(node3, NodeType.STR);
+                    description = (String) node3.getValue();
+
+                    checkNodeType(node4, NodeType.SET_ACTIONS, true);
+                    events = getEvents(node4);
+                }
+                case INT -> {
+                    conditions = new ArrayList<>();
+                    targetLocationId = (Integer) node1.getValue();
+
+                    checkNodeType(node2, NodeType.STR);
+                    description = (String) node2.getValue();
+
+                    checkNodeType(node3, NodeType.SET_ACTIONS, true);
+                    events = getEvents(node3);
+                }
+                default -> throw new RuntimeException(STR."Unexpected node type: \"\{node1.getType()}\" in an OPTION_DEFINITION node.");
+            }
 
             propositions.add(new Proposition(conditions, description, targetLocationId, events));
         }
@@ -215,18 +251,25 @@ public class Interpreter {
     /**
      * Build and return the conditions of a proposition
      * @param node - The node (of type SET_CONDITIONS)
+     * @param items - The items of the adventure
+     * @param characters - The characters of the adventure
      * @return The conditions
      */
-    private static List<Condition> getConditions(Node node) {
+    private static List<Condition> getConditions(Node node, HashMap<String, Item> items, HashMap<String, Character> characters) {
         checkNodeType(node, NodeType.SET_CONDITIONS);
         ArrayList<Condition> conditions = new ArrayList<>();
 
         for (Node child : node.getChildren()) {
             checkNodeType(child, NodeType.SET_CONDITION);
 
+            boolean isNotInverted = (Boolean) child.getValue();
             Node conditionKindNode = child.getChildAt(0);
             Node objectNameNode = child.getChildAt(1);
             Node valueNode = child.getChildAt(2);
+
+            if (Objects.isNull(conditionKindNode)) {
+                continue;
+            }
 
             checkNodeType(conditionKindNode, NodeType.SET_CONDITION_KIND);
             String conditionKindStr = (String) conditionKindNode.getValue();
@@ -237,11 +280,19 @@ public class Interpreter {
 
             Condition condition = switch (conditionKind) {
                 case ITEM -> {
+                    if (!items.containsKey(conditionName)) {
+                        throw new RuntimeException(STR."Item \"\{conditionName}\" does not exist. Please add it before adding it to the inventory.");
+                    }
                     checkNodeType(valueNode, NodeType.INT);
                     Integer quantity = (Integer) valueNode.getValue();
-                    yield new Condition(conditionKind, conditionName, quantity);
+                    yield new Condition(conditionKind, conditionName, quantity, !isNotInverted);
                 }
-                case CHARACTER -> new Condition(conditionKind, conditionName);
+                case CHARACTER -> {
+                    if (!characters.containsKey(conditionName)) {
+                        throw new RuntimeException(STR."Character \"\{conditionName}\" does not exist. Please add it before adding it to the inventory.");
+                    }
+                    yield new Condition(conditionKind, conditionName, !isNotInverted);
+                }
             };
 
             conditions.add(condition);
@@ -256,8 +307,12 @@ public class Interpreter {
      * @return The events
      */
     private static List<Event> getEvents(Node node) {
-        checkNodeType(node, NodeType.SET_ACTIONS);
+        checkNodeType(node, NodeType.SET_ACTIONS, true);
         ArrayList<Event> events = new ArrayList<>();
+
+        if (Objects.isNull(node)) {
+            return events;
+        }
 
         for (Node child : node.getChildren()) {
             checkNodeType(child, NodeType.SET_ACTION);
@@ -313,14 +368,31 @@ public class Interpreter {
      * Check that the node is of the given type and is not null
      * @param node - The node
      * @param type - The type
+     * @param allowNull - Whether the node can be null or not
+     * @throws RuntimeException if the node is null or is not of the given type
+     */
+    private static void checkNodeType(Node node, NodeType type, boolean allowNull) throws RuntimeException {
+        if (!allowNull && Objects.isNull(node)) {
+            throw new RuntimeException(STR."Node is null. Expected type: \"\{type.toString()}\".");
+        }
+        if (allowNull && Objects.isNull(node)) {
+            return;
+        }
+        if (node.getType() != type) {
+
+            System.out.println();
+            // Node.displayNode(node, true);
+            throw new RuntimeException(STR."Node is not of type \"\{type.toString()}\". Got \"\{node.getType().toString()}\" instead.");
+        }
+    }
+
+    /**
+     * Check that the node is of the given type and is not null
+     * @param node - The node
+     * @param type - The type
      * @throws RuntimeException if the node is null or is not of the given type
      */
     private static void checkNodeType(Node node, NodeType type) throws RuntimeException {
-        if (Objects.isNull(node)) {
-            throw new RuntimeException(STR."Node is null. Expected type: \"\{type.toString()}\".");
-        }
-        if (node.getType() != type) {
-            throw new RuntimeException(STR."Node is not of type \"\{type.toString()}\". Got \"\{node.getType().toString()}\" instead.");
-        }
+        checkNodeType(node, type, false);
     }
 }

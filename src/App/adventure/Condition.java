@@ -3,23 +3,30 @@ package App.adventure;
 import java.util.List;
 import java.util.Objects;
 
-public record Condition(ConditionKind kind, String name, Integer value) {
+public record Condition(ConditionKind kind, String name, Integer value, boolean negated) {
 
-    public Condition(ConditionKind kind, String name, int value) {
-        this(kind, name, (Integer) value);
+    public Condition(ConditionKind kind, String name, int value, boolean negated) {
+        this(kind, name, (Integer) value, negated);
         if (kind != ConditionKind.ITEM) {
             throw new IllegalArgumentException("ConditionKind must be ITEM when value is an int");
         }
     }
 
-    public Condition(ConditionKind kind, String name) {
-        this(kind, name, (Integer) 1);
+    public Condition(ConditionKind kind, String name, boolean negated) {
+        this(kind, name, (Integer) 1, negated);
         if (kind != ConditionKind.CHARACTER) {
             throw new IllegalArgumentException("ConditionKind must be CHARACTER when no value is provided");
         }
     }
 
     private boolean execute(State state) {
+        if (negated) {
+            return !executeWithoutNegation(state);
+        }
+        return executeWithoutNegation(state);
+    }
+
+    private boolean executeWithoutNegation(State state) {
         switch (kind) {
             case ITEM -> {
                 var itemQuantity = state.getInventory().get(name);

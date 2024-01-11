@@ -9,8 +9,8 @@ public record State(
         boolean isGameOver,
         boolean isGameWon,
         int currentHealth,
-        Map<Item, Integer> inventory,
-        Map<Character, Boolean> followingCharacters,
+        Map<String, Integer> inventory,
+        Map<String, Boolean> followingCharacters,
         int currentLocationId,
         Map<Character, Integer> charactersLocations
 ) {
@@ -42,7 +42,7 @@ public record State(
      * Get the inventory of the player
      * @return The inventory of the player
      */
-    public Map<Item, Integer> getInventory() {
+    public Map<String, Integer> getInventory() {
         return inventory;
     }
 
@@ -50,7 +50,7 @@ public record State(
      * Get the following characters of the player
      * @return The following characters of the player
      */
-    public Map<Character, Boolean> getFollowingCharacters() {
+    public Map<String, Boolean> getFollowingCharacters() {
         return followingCharacters;
     }
 

@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public class TreeBuilder {
 
+    private final boolean debug = false;
+
     private int cursor;
     private final List<Token<?>> tokens;
 
@@ -52,16 +54,16 @@ public class TreeBuilder {
         Node nodeStmt = new Node(NodeType.STATEMENT);
 
         // Checking the title
-        checkTokenAndReturn(Tokens.setTitle);
+        checkTokenAndReturn("S", Tokens.setTitle);
         Node node = new Node(NodeType.SET_TITLE);
 
         // Adding the title to the node
-        Token<?> t = checkTokenAndReturn(Tokens.strValue);
+        Token<?> t = checkTokenAndReturn("S", Tokens.strValue);
         Node str = new Node(NodeType.STR, t.value());
         node.addChild(str);
 
         // Checking the end of the statement
-        checkTokenAndReturn(Tokens.instructionEnd);
+        checkTokenAndReturn("S", Tokens.instructionEnd);
 
         nodeStmt.addChild(node);
         nodeStmt.addChild(A());
@@ -77,17 +79,17 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node A() throws UnexpectedTokenException {
-        checkTokenAndReturn(Tokens.setHealth);
+        checkTokenAndReturn("A", Tokens.setHealth);
 
         // Get the int health
-        Token <?> t = checkTokenAndReturn(Tokens.intValue);
+        Token <?> t = checkTokenAndReturn("A", Tokens.intValue);
         Node hp = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.SET_HEALTH);
         node.addChild(hp);
 
         // Check the end of the statement
-        checkTokenAndReturn(Tokens.instructionEnd);
+        checkTokenAndReturn("A", Tokens.instructionEnd);
 
         return node;
     }
@@ -97,8 +99,8 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> B() throws UnexpectedTokenException {
-        Tokens type = readTokenType();
-        cursor--;
+        Tokens type = readTokenType("B");
+        back("A");
         if (isEndOfInput() || (type != Tokens.addItem && type != Tokens.addCharacter)) {
             return new ArrayList<>();
         }
@@ -127,21 +129,21 @@ public class TreeBuilder {
      */
     private Node E() throws UnexpectedTokenException {
         // Check the token
-        Tokens type = readTokenType();
+        Tokens type = readTokenType("E");
         if(type != Tokens.addItem){
-            cursor--;
+            back("E");
             return null;
         }
 
         // Get the var name
-        Token <?> t = checkTokenAndReturn(Tokens.varValue);
+        Token <?> t = checkTokenAndReturn("E", Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
 
         Node node = new Node(NodeType.ADD_ITEM);
         node.addChild(variable);
 
         // Check the end of the statement
-        checkTokenAndReturn(Tokens.instructionEnd);
+        checkTokenAndReturn("E", Tokens.instructionEnd);
 
         return node;
     }
@@ -152,20 +154,20 @@ public class TreeBuilder {
      */
     private Node F() throws UnexpectedTokenException {
         // Check the token
-        Tokens type = readTokenType();
+        Tokens type = readTokenType("F");
         if(type != Tokens.addCharacter){
-            cursor--;
+            back("F");
             return null;
         }
 
         // Get the Var name
-        Token<?> t = checkTokenAndReturn(Tokens.varValue);
+        Token<?> t = checkTokenAndReturn("F", Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
         // Get the int initial place
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("F", Tokens.intValue);
         Node init = new Node(NodeType.INT, t.value());
         // Get the int health
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("F", Tokens.intValue);
         Node hp = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.ADD_CHARACTER);
@@ -174,7 +176,7 @@ public class TreeBuilder {
         node.addChild(hp);
 
         // Check the end of the statement
-        checkTokenAndReturn(Tokens.instructionEnd);
+        checkTokenAndReturn("F", Tokens.instructionEnd);
 
         return node;
     }
@@ -185,13 +187,14 @@ public class TreeBuilder {
      */
     private Node C() throws UnexpectedTokenException {
         // Check the token
-        checkTokenAndReturn(Tokens.setInventory);
+        checkTokenAndReturn("C", Tokens.setInventory);
 
         Node res = new Node(NodeType.SET_INVENTORY);
-        Token <?> t = checkTokenAndReturn(Tokens.instructionEnd, Tokens.varValue);
+        Token <?> t = checkTokenAndReturn("C", Tokens.instructionEnd, Tokens.varValue);
         while (t.type() == Tokens.varValue){
+            back("C");
             res.addChild(Cp());
-            t = checkTokenAndReturn(Tokens.instructionEnd, Tokens.varValue);
+            t = checkTokenAndReturn("C", Tokens.instructionEnd, Tokens.varValue);
         }
 
         return res;
@@ -203,15 +206,13 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node Cp() throws UnexpectedTokenException {
-        checkTokenAndReturn(Tokens.varValue);
-
         // Get the var name
-        Token <?> t = checkTokenAndReturn(Tokens.varValue);
+        Token <?> t = checkTokenAndReturn("Cp", Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
         // Check the colon
-        checkTokenAndReturn(Tokens.colon);
+        checkTokenAndReturn("Cp", Tokens.colon);
         // Get the int quantity
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("Cp", Tokens.intValue);
         Node qt = new Node(NodeType.INT, t.value());
 
         Node node = new Node(NodeType.SET_INVENTORY_SLOT);
@@ -246,17 +247,17 @@ public class TreeBuilder {
      */
     private Node G() throws UnexpectedTokenException {
         // Check the token
-        Token<?> t = checkTokenAndReturn(Tokens.addLocation, Tokens.endOfInput);
+        Token<?> t = checkTokenAndReturn("G", Tokens.addLocation, Tokens.endOfInput);
         if (t.type() == Tokens.endOfInput) {
             return null;
         }
 
         // Get the int identifier
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("G", Tokens.intValue);
         Node id = new Node(NodeType.INT, t.value());
 
         // Get the string description
-        t = checkTokenAndReturn(Tokens.strValue);
+        t = checkTokenAndReturn("G", Tokens.strValue);
         Node description = new Node(NodeType.STR, t.value());
 
         Node node = new Node(NodeType.ADD_LOCATION);
@@ -266,7 +267,7 @@ public class TreeBuilder {
         node.addChild(H());
 
         // Check the end of the statement
-        checkTokenAndReturn(Tokens.instructionEnd);
+        checkTokenAndReturn("G", Tokens.instructionEnd);
 
         return node;
     }
@@ -277,9 +278,9 @@ public class TreeBuilder {
      */
     private List<Node> H() throws UnexpectedTokenException {
         List<Node> res = new ArrayList<>();
-        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.instructionEnd);
+        Token<?> t = checkTokenAndReturn("H", Tokens.arrow, Tokens.instructionEnd);
         if (t.type() == Tokens.instructionEnd) {
-            cursor--;
+            back("H");
             return res;
         }
 
@@ -292,11 +293,11 @@ public class TreeBuilder {
         }
 
         // Get the int identifier
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("H", Tokens.intValue);
         Node id = new Node(NodeType.INT, t.value());
 
         // Get the string description
-        t = checkTokenAndReturn(Tokens.strValue);
+        t = checkTokenAndReturn("H", Tokens.strValue);
         Node description = new Node(NodeType.STR, t.value());
 
 
@@ -324,9 +325,9 @@ public class TreeBuilder {
      */
     private Node I() throws UnexpectedTokenException {
         // Check the token
-        Token<?> t = checkTokenAndReturn(Tokens.arrow, Tokens.openParenthesis, Tokens.instructionEnd);
+        Token<?> t = checkTokenAndReturn("I", Tokens.arrow, Tokens.openParenthesis, Tokens.instructionEnd);
         if (t.type() == Tokens.arrow || t.type() == Tokens.instructionEnd) {
-            cursor--;
+            back("I");
             return null;
         }
         Node actions = new Node(NodeType.SET_ACTIONS);
@@ -334,7 +335,7 @@ public class TreeBuilder {
         actions.addChild(J());
 
         // Check the end of the action
-        checkTokenAndReturn(Tokens.closeParenthesis);
+        checkTokenAndReturn("I", Tokens.closeParenthesis);
 
         return actions;
     }
@@ -345,8 +346,8 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> J() throws UnexpectedTokenException {
-        var type = this.readTokenType();
-        cursor--;
+        var type = this.readTokenType("J");
+        back("J");
         if (type == Tokens.closeParenthesis) {
             return null;
         }
@@ -367,8 +368,8 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node Jp() throws UnexpectedTokenException {
-        var type = this.readTokenType();
-        cursor--;
+        var type = this.readTokenType("Jp");
+        back("Jp");
         if (type == Tokens.closeParenthesis) {
             return null;
         }
@@ -379,7 +380,7 @@ public class TreeBuilder {
         action.addChild(K);
 
         // Check the colon
-        checkTokenAndReturn(Tokens.colon);
+        checkTokenAndReturn("Jp", Tokens.colon);
 
         // Get the + or -
         Node L = L();
@@ -387,8 +388,8 @@ public class TreeBuilder {
 
         // Get the var value
         Token <?> t = switch ((String) K.getValue()) {
-            case "health", "inventory" -> checkTokenAndReturn(Tokens.intValue);
-            case "team" -> checkTokenAndReturn(Tokens.varValue);
+            case "health" -> checkTokenAndReturn("Jp", Tokens.intValue);
+            case "team", "inventory" -> checkTokenAndReturn("Jp", Tokens.varValue);
             default -> throw new UnexpectedTokenException("Expected a token, but found null");
         };
         NodeType nameType = t.type() == Tokens.intValue ? NodeType.INT : NodeType.VAR;
@@ -403,7 +404,7 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node K() throws UnexpectedTokenException {
-        Token<?> t = checkTokenAndReturn(Tokens.health, Tokens.inventory, Tokens.team);
+        Token<?> t = checkTokenAndReturn("K", Tokens.health, Tokens.inventory, Tokens.team);
         return new Node(NodeType.SET_ACTION_KIND, t.value());
     }
 
@@ -412,7 +413,7 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node L() throws UnexpectedTokenException {
-        Token<?> t = checkTokenAndReturn(Tokens.minus, Tokens.plus);
+        Token<?> t = checkTokenAndReturn("K", Tokens.minus, Tokens.plus);
         String value = switch (t.type()) {
             case plus -> "+";
             case minus -> "-";
@@ -428,9 +429,9 @@ public class TreeBuilder {
      */
     private Node M() throws UnexpectedTokenException {
         // Check the token
-        Token<?> t = checkTokenAndReturn(Tokens.intValue, Tokens.openParenthesis);
+        Token<?> t = checkTokenAndReturn("M", Tokens.intValue, Tokens.openParenthesis);
         if (t.type() == Tokens.intValue) {
-            cursor--;
+            back("M");
             return null;
         }
 
@@ -438,15 +439,13 @@ public class TreeBuilder {
 
         // Get the action node
         List<Node> res = Mp();
-        if(!Objects.isNull(res)){
-            node.addChild(res);
-        }
+        node.addChild(res);
 
         // Todo: error caused somewhere here
         // Node.displayNode(node);
 
         // Check the end of the action
-        checkTokenAndReturn(Tokens.closeParenthesis);
+        checkTokenAndReturn("M", Tokens.closeParenthesis);
 
         return node;
     }
@@ -457,16 +456,16 @@ public class TreeBuilder {
      * @return The node built
      */
     private List<Node> Mp() throws UnexpectedTokenException {
-        List<Node> res = new ArrayList<>();
-        Tokens t = this.readTokenType();
-        if (t == Tokens.closeParenthesis) {
-            cursor--;
+        var type = this.readTokenType("Mp");
+        back("Mp");
+        if (type == Tokens.closeParenthesis) {
             return null;
         }
-        List<Node> prev = Mp();
-        cursor--;
-
         Node next = N();
+        List<Node> prev = Mp();
+
+        List<Node> res = new ArrayList<>();
+
         if(!Objects.isNull(next)) {
             res.add(next);
         }
@@ -521,20 +520,20 @@ public class TreeBuilder {
      */
     private List<Node> O() throws UnexpectedTokenException {
         // Get the "item"
-        Tokens type = readTokenType();
+        Tokens type = readTokenType("O");
         if(type != Tokens.item) {
-            cursor--;
+            back("O");
             return null;
         }
         // Check the colon
-        checkTokenAndReturn(Tokens.colon);
+        checkTokenAndReturn("O", Tokens.colon);
         // Get the var name
-        Token <?> t = checkTokenAndReturn(Tokens.varValue);
+        Token <?> t = checkTokenAndReturn("O", Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
         // Check the colon
-        checkTokenAndReturn(Tokens.colon);
+        checkTokenAndReturn("O", Tokens.colon);
         // Get the int quantity
-        t = checkTokenAndReturn(Tokens.intValue);
+        t = checkTokenAndReturn("O", Tokens.intValue);
         Node qt = new Node(NodeType.INT, t.value());
 
         List<Node> res = new ArrayList<>();
@@ -551,15 +550,15 @@ public class TreeBuilder {
      */
     private List<Node> P() throws UnexpectedTokenException {
         // Get the "character"
-        Tokens type = readTokenType();
+        Tokens type = readTokenType("P");
         if(type != Tokens.character) {
-            cursor--;
+            back("P");
             return null;
         }
         // Check the colon
-        checkTokenAndReturn(Tokens.colon);
+        checkTokenAndReturn("P", Tokens.colon);
         // Get the var name
-        Token <?> t = checkTokenAndReturn(Tokens.varValue);
+        Token <?> t = checkTokenAndReturn("P", Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
         Node qt = new Node(NodeType.INT, 1);
 
@@ -577,16 +576,15 @@ public class TreeBuilder {
      * @return The node built
      */
     private Boolean Neg() {
-        Tokens type = this.readTokenType();
-        Tokens nextType = this.readTokenType();
-        cursor--;
-        if (nextType != Tokens.item && nextType != Tokens.character) {
-            cursor--;
-            return null;
-        }
+        Tokens type = this.readTokenType("Neg");
+        Tokens nextType = this.readTokenType("Neg");
+        back("Neg");
         if(type != Tokens.exclamationPoint){
-            cursor--;
+            back("Neg");
             return true;
+        }
+        if (nextType != Tokens.item && nextType != Tokens.character) {
+            return null;
         }
         return false;
 
@@ -596,11 +594,17 @@ public class TreeBuilder {
      * Read the next token and consume it
      * @return The next token or null if the end of the input is reached
      */
-    private Token<?> readToken() {
+    private Token<?> readToken(String method) {
         if (cursor >= tokens.size()) {
+            if (debug) {
+                System.out.println(STR."Reading Token \"null\" at method \{method}.");
+            }
             return null;
         }
         Token<?> t = tokens.get(cursor);
+        if (debug) {
+            System.out.println(STR."Reading Token \"\{t}\" at method \{method}.");
+        }
         cursor++;
         return t;
     }
@@ -609,12 +613,22 @@ public class TreeBuilder {
      * Read the type of the next token without consuming it
      * @return The type of the next token or null if the end of the input is reached
      */
-    private Tokens readTokenType() {
-        Token<?> t = readToken();
+    private Tokens readTokenType(String method) {
+        Token<?> t = readToken(method);
         if (t == null) {
             return null;
         }
         return t.type();
+    }
+
+    /**
+     *
+     */
+    private void back(String method) {
+        if (debug) {
+            System.out.println(STR."Going back \{method}.");
+        }
+        cursor--;
     }
 
     /**
@@ -631,8 +645,8 @@ public class TreeBuilder {
      * @return The next token
      * @throws UnexpectedTokenException If the next token is not of the expected type
      */
-    private Token<?> checkTokenAndReturn(Tokens... expected) throws UnexpectedTokenException {
-        Token<?> t = readToken();
+    private Token<?> checkTokenAndReturn(String method, Tokens... expected) throws UnexpectedTokenException {
+        Token<?> t = readToken(STR."\{method}:checkTokenAndReturn");
         if (Objects.isNull(t)) {
             throw new UnexpectedTokenException("Expected a token, but found null");
         }

@@ -42,6 +42,8 @@ public class App implements ActionListener {
 
     JTextPane textPane;
 
+    JLabel life;
+
     JScrollPane scrollPane;
 
     /**
@@ -56,14 +58,7 @@ public class App implements ActionListener {
 
     private void init() {
 
-
-        String file = "adventures/"+AdventureAnalyzer.getFile();
-        System.out.println(file);
-        try {
-            adventure = Interpreter.interpret(file);
-        } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException | IllegalCaracterException e) {
-            throw new RuntimeException(e);
-        }
+        initAdventure();
 
         // Prépare l'IHM
         textPane = new JTextPane();
@@ -71,6 +66,7 @@ public class App implements ActionListener {
         textPane.setFont(new Font("monospaced", Font.PLAIN, 18));
         textPane.setPreferredSize(new Dimension(1000, 400));
         textPane.setMinimumSize(new Dimension(600, 400));
+        life = new JLabel();
 
         btns = new ArrayList<>();
 
@@ -83,6 +79,8 @@ public class App implements ActionListener {
         frame.add(mainPanel);
 
         scrollPane = new JScrollPane(textPane);
+
+        mainPanel.add(life);
 
         mainPanel.add(scrollPane, new GridBagConstraints() {{
             this.gridwidth = GridBagConstraints.REMAINDER;
@@ -102,10 +100,12 @@ public class App implements ActionListener {
                 JOptionPane.showMessageDialog(null, STR."Congratulations, you won !");
                 System.exit(0);
             }
+            life.setText(STR."PV: \{state.getCurrentHealth()}");
         });
 
         frame.pack();
         frame.setVisible(true);
+        frame.setMinimumSize(new Dimension(1100, 400));
     }
 
     /*
@@ -163,6 +163,16 @@ public class App implements ActionListener {
      */
     private void display(String contenu) {
         textPane.setText(contenu);
+    }
+
+    private void initAdventure() {
+        String file = "adventures/"+AdventureAnalyzer.getFile();
+        System.out.println(file);
+        try {
+            adventure = Interpreter.interpret(file);
+        } catch (LexicalErrorException | UnexpectedTokenException | IncompleteParsingException | IllegalCaracterException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

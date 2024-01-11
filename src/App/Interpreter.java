@@ -204,6 +204,7 @@ public class Interpreter {
      */
     private static List<Proposition> getPropositions(List<Node> nodes, HashMap<String, Item> items, HashMap<String, Character> characters) {
         List<Proposition> propositions = new ArrayList<>();
+
         for (Node node : nodes) {
             checkNodeType(node, NodeType.OPTION_DEFINITION);
 
@@ -379,9 +380,6 @@ public class Interpreter {
             return;
         }
         if (node.getType() != type) {
-
-            System.out.println();
-            // Node.displayNode(node, true);
             throw new RuntimeException(STR."Node is not of type \"\{type.toString()}\". Got \"\{node.getType().toString()}\" instead.");
         }
     }

@@ -55,14 +55,14 @@ public record Event(EventKind kind, EventOperationType opType, Object value) {
                 }
                 case INVENTORY -> {
                     switch (event.opType) {
-                        case POSITIVE -> inventory.put((Item) event.value, inventory.getOrDefault(event.value, 0) + 1);
-                        case NEGATIVE -> inventory.put((Item) event.value, inventory.getOrDefault(event.value, 0) - 1);
+                        case POSITIVE -> inventory.put((String) event.value, inventory.getOrDefault(event.value, 0) + 1);
+                        case NEGATIVE -> inventory.put((String) event.value, inventory.getOrDefault(event.value, 0) - 1);
                     }
                 }
                 case FOLLOWING_CHARACTERS -> {
                     switch (event.opType) {
-                        case POSITIVE -> followingCharacters.put((Character) event.value, true);
-                        case NEGATIVE -> followingCharacters.put((Character) event.value, false);
+                        case POSITIVE -> followingCharacters.put((String) event.value, true);
+                        case NEGATIVE -> followingCharacters.put((String) event.value, false);
                     }
                 }
             }

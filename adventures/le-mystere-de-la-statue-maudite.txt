@@ -3,6 +3,7 @@ setTitle "Le mystère de la statue maudite";
 setHealth 5;
 
 addCharacter $John 1 2;
+addItem $Benoît;
 
 setInventory;
 

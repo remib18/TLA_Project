@@ -21,9 +21,9 @@ public class Adventure {
         this.items = items;
         this.locations = locations;
 
-        var inventory = new HashMap<Item, Integer>();
+        var inventory = new HashMap<String, Integer>();
         for (var key : initialItems.keySet()) {
-            inventory.put(items.get(key), initialItems.get(key));
+            inventory.put(key, initialItems.get(key));
         }
 
         var charactersLocations = new HashMap<Character, Integer>();
@@ -43,7 +43,7 @@ public class Adventure {
         state = new Observable<>(initialState);
 
         for (var entry : initialItems.entrySet()) {
-            inventory.put(items.get(entry.getKey()), entry.getValue());
+            inventory.put(entry.getKey(), entry.getValue());
         }
 
         // check all locations ids in hash correspond to their key
@@ -167,7 +167,7 @@ public class Adventure {
      * @param id - The id of the location
      * @return The location
      */
-    private Location getLocation(int id) {
+    public Location getLocation(int id) {
         return locations.get(id);
     }
 }

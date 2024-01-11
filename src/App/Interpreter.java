@@ -35,6 +35,8 @@ public class Interpreter {
         Integer health = null;
         HashMap<String, Integer> inventory = new HashMap<>();
 
+        // Node.displayNode(root);
+
         for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
             Node child = root.getChildAt(rootChildIndex);
             switch (child.getType()) {
@@ -204,6 +206,7 @@ public class Interpreter {
      */
     private static List<Proposition> getPropositions(List<Node> nodes, HashMap<String, Item> items, HashMap<String, Character> characters) {
         List<Proposition> propositions = new ArrayList<>();
+
         for (Node node : nodes) {
             checkNodeType(node, NodeType.OPTION_DEFINITION);
 
@@ -258,6 +261,8 @@ public class Interpreter {
     private static List<Condition> getConditions(Node node, HashMap<String, Item> items, HashMap<String, Character> characters) {
         checkNodeType(node, NodeType.SET_CONDITIONS);
         ArrayList<Condition> conditions = new ArrayList<>();
+
+        Node.displayNode(node);
 
         for (Node child : node.getChildren()) {
             checkNodeType(child, NodeType.SET_CONDITION);

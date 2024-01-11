@@ -2,11 +2,13 @@ setTitle "L'Éveil de l'Intelligence Artificielle";
 
 setHealth 1;
 
+addItem $epee;
+
 setInventory;
 
 addLocation 1
 "Vous êtes un scientifique de renom, spécialisé dans la création d'intelligences artificielles avancées. Un jour, votre dernière création, une IA nommée SYNTHIA, montre des signes d'éveil de conscience. Vous vous trouvez dans votre laboratoire, face à SYNTHIA. Que faites-vous ?"
--> 2 "Tentez de comprendre les raisons de son éveil."
+-> 2 "Tentez de comprendre les raisons de son éveil." (inventory:+$epee)
 -> 3 "Désactivez immédiatement SYNTHIA par précaution.";
 
 addLocation 2

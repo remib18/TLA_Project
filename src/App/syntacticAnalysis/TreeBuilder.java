@@ -190,6 +190,7 @@ public class TreeBuilder {
         Node res = new Node(NodeType.SET_INVENTORY);
         Token <?> t = checkTokenAndReturn(Tokens.instructionEnd, Tokens.varValue);
         while (t.type() == Tokens.varValue){
+            cursor--;
             res.addChild(Cp());
             t = checkTokenAndReturn(Tokens.instructionEnd, Tokens.varValue);
         }
@@ -203,8 +204,6 @@ public class TreeBuilder {
      * @return The node built
      */
     private Node Cp() throws UnexpectedTokenException {
-        checkTokenAndReturn(Tokens.varValue);
-
         // Get the var name
         Token <?> t = checkTokenAndReturn(Tokens.varValue);
         Node variable = new Node(NodeType.VAR, t.value());
@@ -387,8 +386,8 @@ public class TreeBuilder {
 
         // Get the var value
         Token <?> t = switch ((String) K.getValue()) {
-            case "health", "inventory" -> checkTokenAndReturn(Tokens.intValue);
-            case "team" -> checkTokenAndReturn(Tokens.varValue);
+            case "health" -> checkTokenAndReturn(Tokens.intValue);
+            case "team", "inventory" -> checkTokenAndReturn(Tokens.varValue);
             default -> throw new UnexpectedTokenException("Expected a token, but found null");
         };
         NodeType nameType = t.type() == Tokens.intValue ? NodeType.INT : NodeType.VAR;
@@ -581,7 +580,6 @@ public class TreeBuilder {
         Tokens nextType = this.readTokenType();
         cursor--;
         if (nextType != Tokens.item && nextType != Tokens.character) {
-            cursor--;
             return null;
         }
         if(type != Tokens.exclamationPoint){

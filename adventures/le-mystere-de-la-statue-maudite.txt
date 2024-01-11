@@ -40,17 +40,18 @@ addLocation 4 "Grâce à la pointe de votre couteau, ce travail s'effectue sans 
 
 
 addLocation 5 "De terrifiantes étincelles fusent des multiples yeux de la statue. Une atroce douleur vous consume le cerveau. Vous sombrez dans le noir... L'aventure est malheureusement terminée."
--> 100 "Perdu !";
+  -> 100 "Perdu !";
 
 addLocation 6 "Au bout de quelque vingt ou trente mètres, le couloir se termine en cul-de-sac à cause d'un éboulement."
   -> 27 "Faites-vous demi-tour ?"
   -> (character:$Eubert) 16 "Décidez-vous de vous frayer un passage à travers les gravats ?"
   -> (character:$Pierre) 50 "Décidez-vous de vous frayer un passage à travers les gravats ?";
 
-addLocation 7 "Des multiples yeux de la statue fuse un terrifiant feu d'artifice ; et la porte située au bout de la salle, en face de la statue, s'ouvre d'elle-même. Vous vous y précipitez... et bientôt, vous percevez la lumière du jour. Vous êtes sauvé, vous avez gagné !";
+addLocation 7 "Des multiples yeux de la statue fuse un terrifiant feu d'artifice ; et la porte située au bout de la salle, en face de la statue, s'ouvre d'elle-même. Vous vous y précipitez... et bientôt, vous percevez la lumière du jour. Vous êtes sauvé, vous avez gagné !"
+  -> 102 "gagné";
 
 addLocation 8 "Des étincelles terrifiantes fusent des multiples yeux de la statue. Une douleur atroce vous brûle le cerveau. Vous sombrez dans le noir... L'aventure est malheureusement terminée."
--> 100 "Perdu !";
+  -> 100 "Perdu !";
 
 addLocation 9 "Quelque vingt mètres plus loin, vous arrivez au pied d'un escalier. Les marches usées et couvertes de mousse n'ont pas l'air très sûres. Après hésitations, vous vous décidez quand même à les gravir ; et vous débouchez dans une vaste salle. Vous promenez autour de vous le faisceau de votre lampe.
 En face de vous, en face de l'escalier, un couloir perpendiculaire à la salle s'enfonce dans les ténèbres.
@@ -143,7 +144,7 @@ addLocation 28 "Souhaitez-vous en enfiler un autre ?"
   -> 43 "Non vous reprenez le passage secret resté ouvert et vous vous dirigez vers la grande salle entrevue"
   -> (!item:$SerreTete:1) 28 "Le serre-tête." (inventory:+$SerreTete)
   -> (!item:$AnneauEnBronze:1) 28 "L'anneau en bronze." (inventory:+$AnneauEnBronze)
-  -> (!item:$AnneauEnBronze:1) 28 "L'anneau en argent." (inventory:+$AnneauEnArgent);
+  -> (!item:$AnneauEnArgent:1) 28 "L'anneau en argent." (inventory:+$AnneauEnArgent);
 
 addLocation 29 "Vous déposez votre offrande dans les orbites profondes... et la réaction est immédiate ! La statue se met à luire et à vibrer étrangement. Une douleur infernale vous brûle le cerveau. Vous sombrez dans le noir... L'aventure est malheureusement terminée."
   -> 100 "Perdu !";

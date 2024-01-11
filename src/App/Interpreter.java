@@ -35,8 +35,6 @@ public class Interpreter {
         Integer health = null;
         HashMap<String, Integer> inventory = new HashMap<>();
 
-        // Node.displayNode(root);
-
         for (int rootChildIndex = 0; rootChildIndex < root.getNumberOfChild(); rootChildIndex++) {
             Node child = root.getChildAt(rootChildIndex);
             switch (child.getType()) {
@@ -262,8 +260,6 @@ public class Interpreter {
         checkNodeType(node, NodeType.SET_CONDITIONS);
         ArrayList<Condition> conditions = new ArrayList<>();
 
-        Node.displayNode(node);
-
         for (Node child : node.getChildren()) {
             checkNodeType(child, NodeType.SET_CONDITION);
 
@@ -384,9 +380,6 @@ public class Interpreter {
             return;
         }
         if (node.getType() != type) {
-
-            System.out.println();
-            // Node.displayNode(node, true);
             throw new RuntimeException(STR."Node is not of type \"\{type.toString()}\". Got \"\{node.getType().toString()}\" instead.");
         }
     }

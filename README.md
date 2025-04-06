@@ -1,6 +1,6 @@
 # AdventureLang
 
-This project was developed for our third year of computer science at the University of Tours, France.
+This project was developed for our third year of computer science at the [University of Tours](https://www.univ-tours.fr), France.
 
 The goal was to create a language that describes a game's adventure and then to interpret it. The language itself only describe an adventure and does not implement the game. The language is interpreted by a Java program.
 
